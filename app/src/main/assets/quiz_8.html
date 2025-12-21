@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 8 Quiz – Pressure, Fluids & Floatation</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Pressure is defined as:", options:["Force × Area","Force ÷ Area","Mass × Gravity","Force + Area"], answer:1, explanation:"Pressure = Force per unit area, P = F/A."},
+      {q:"SI unit of pressure is:", options:["Newton","Pascal","Joule","Pascal-second"], answer:1, explanation:"1 Pascal = 1 N/m²."},
+      {q:"Sharper knife cuts better because:", options:["More force","Less force","Less area → more pressure","More area → less pressure"], answer:2, explanation:"Smaller contact area increases pressure."},
+      {q:"Atmospheric pressure at sea level is approximately:", options:["1 Pa","101 Pa","1.01 × 10⁵ Pa","9.8 × 10² Pa"], answer:2, explanation:"Standard atmospheric pressure = 1.01 × 10⁵ Pa."},
+      {q:"Pascal’s law states that:", options:["Pressure in fluid decreases with depth","Pressure applied at a point in a confined fluid is transmitted equally in all directions","Upthrust is equal to object weight","Pressure depends on area only"], answer:1, explanation:"Pascal’s law allows force multiplication in hydraulic machines."},
+      {q:"Hydraulic press multiplies force because:", options:["Pressure decreases","Large piston area > small piston area","Small piston area > large piston area","Fluid compresses"], answer:1, explanation:"F₂ = (A₂/A₁) × F₁, so larger area → greater output force."},
+      {q:"Upthrust is:", options:["Downward force on a submerged object","Upward force exerted by a fluid on a submerged object","Pressure on surface","Force of gravity"], answer:1, explanation:"Upthrust acts opposite to gravity in fluids."},
+      {q:"Archimedes’ Principle states:", options:["Weight of object = volume × density","Upthrust = weight of displaced fluid","Pressure = force ÷ area","Force = mass × acceleration"], answer:1, explanation:"Upthrust equals the weight of fluid displaced by the body."},
+      {q:"A body floats when:", options:["Weight < Upthrust","Weight = Upthrust","Weight > Upthrust","Weight = 0"], answer:1, explanation:"Floating occurs when weight of object = upthrust from fluid."},
+      {q:"Camels have broad feet to:", options:["Increase weight","Decrease pressure on sand","Speed up walking","Look majestic"], answer:1, explanation:"Larger area reduces pressure, prevents sinking."},
+      // Medium Level
+      {q:"Pressure increases with:", options:["Depth","Width","Shape of object","Time"], answer:0, explanation:"P = ρgh; deeper in fluid → higher pressure."},
+      {q:"Examples of hydraulic machines include:", options:["Car brakes","Scissors","Pendulum","Lever only"], answer:0, explanation:"Hydraulic machines use fluid pressure transmission."},
+      {q:"Formula for hydraulic press force multiplication is:", options:["F₁/A₁ = F₂/A₂","F = ma","P = ρgh","F = mg"], answer:0, explanation:"Pascal’s law applied: pressure = same in small & large piston."},
+      {q:"Upthrust depends on:", options:["Volume of object","Color","Temperature only","Area of piston"], answer:0, explanation:"Upthrust ∝ volume of displaced fluid."},
+      {q:"A body weighs 20 N in air and 15 N in water. Upthrust =", options:["35 N","5 N","15 N","20 N"], answer:1, explanation:"Upthrust = W₁ − W₂ = 20 − 15 = 5 N."},
+      {q:"Law of floatation applies to:", options:["All submerged bodies","Only floating bodies","Gases only","Solids only"], answer:1, explanation:"Floating condition: weight = upthrust."},
+      {q:"Pressure is inversely proportional to:", options:["Force","Area","Depth","Gravity"], answer:1, explanation:"P = F/A; increasing area reduces pressure."},
+      {q:"Hydraulic jack is used to:", options:["Break metals","Lift heavy objects","Measure density","Reduce pressure"], answer:1, explanation:"Force multiplication lifts heavy loads."},
+      {q:"Deep-sea divers experience higher pressure because:", options:["Water is denser than air","Pressure increases with depth","Air compresses","Less water above"], answer:1, explanation:"P = ρgh; deeper → higher hydrostatic pressure."},
+      {q:"Hot air balloons float because:", options:["They are heavy","They displace air equal to weight","Air pressure is low","Gravity is weak"], answer:1, explanation:"Floating occurs due to weight of displaced air = weight of balloon."},
+      {q:"Pressure under a fluid acts:", options:["Downwards only","Upwards only","Equally in all directions","Horizontally only"], answer:2, explanation:"Fluid pressure is isotropic."},
+      {q:"Knife pressure increases if:", options:["Force decreases","Area increases","Area decreases","Mass decreases"], answer:2, explanation:"Smaller contact area → higher pressure."},
+      // Hard Level
+      {q:"Pressure exerted by 200 N force on piston area 0.01 m²:", options:["2 Pa","2000 Pa","20,000 Pa","2 × 10⁵ Pa"], answer:2, explanation:"P = F/A = 200/0.01 = 20,000 Pa."},
+      {q:"Upthrust formula:", options:["W₂ − W₁","W₁ − W₂","P × A","ρ × g × h"], answer:1, explanation:"Upthrust = weight in air − weight in fluid."},
+      {q:"Archimedes’ principle is valid for:", options:["Solids only","Liquids only","Both liquids & gases","None"], answer:2, explanation:"Applies to all fluids (liquid or gas)."},
+      {q:"Floating condition is achieved when:", options:["Weight > upthrust","Weight < upthrust","Weight = upthrust","Upthrust = 0"], answer:2, explanation:"Body floats when weight = upthrust."},
+      {q:"Pascal’s law is applied in:", options:["Lever","Pulley","Hydraulic press","Inclined plane"], answer:2, explanation:"Force transmission in confined fluids."},
+      {q:"Hydraulic press multiplies force because:", options:["F₂ < F₁","A₂ > A₁","Pressure reduces","Piston compresses"], answer:1, explanation:"Larger piston area → larger output force."},
+      {q:"Archimedes shouted “Eureka!” when:", options:["He saw a ship float","Discovered principle while bathing","Solved gravity problem","Invented knife"], answer:1, explanation:"Observed upthrust while immersing himself in water."},
+      {q:"Air pressure can lift cars because:", options:["Cars are light","Pascal’s law transmits pressure","Gravity is weak","Air is compressible"], answer:1, explanation:"Hydraulic lifts utilize Pascal’s law to lift heavy objects."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

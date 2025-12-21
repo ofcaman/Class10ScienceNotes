@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10 Quiz – ICT</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"ICT stands for:", options:["Internet Communication Technology","Information and Communication Technology","Internal Computer Transmission","Integrated Communication Technology"], answer:1, explanation:"ICT refers to technologies that provide access to information through telecommunications, including computers, networks, and the internet."},
+      {q:"A digital signal uses:", options:["Waves","Binary (0 and 1)","Continuous voltage","Analog values"], answer:1, explanation:"Digital signals use discrete binary values (0 and 1), making them easier to store, transmit, and less affected by noise."},
+      {q:"Which of these is an example of an analog signal?", options:["MP3 audio","Digital clock","Audio from a microphone","MP4 video"], answer:2, explanation:"Analog signals are continuous signals that vary over time, like sound waves from a microphone."},
+      {q:"The smallest unit of computer memory is:", options:["Byte","Bit","Kilobyte","Megabyte"], answer:1, explanation:"A bit is the smallest unit of memory, representing a single binary value, 0 or 1."},
+      {q:"Digital communication is:", options:["Noise-sensitive","Uses continuous signals","Easy to store, compress, and encrypt","Not used in the internet"], answer:2, explanation:"Digital communication allows efficient storage, compression, and encryption, making it reliable and versatile."},
+      {q:"Baseband transmission is best for:", options:["Long-distance internet","Short-distance communication","Broadcasting TV signals","Wireless satellites"], answer:1, explanation:"Baseband transmission uses the entire channel for a single signal, suitable for short-distance communication."},
+      {q:"Which of the following is a positive effect of digital technology?", options:["Digital addiction","Cybersecurity threats","Improved communication","Social isolation"], answer:2, explanation:"Digital technology improves communication by enabling faster, easier, and more reliable exchange of information."},
+      {q:"Online reputation depends on:", options:["Screen time","Online posts and interactions","Number of devices","Digital bandwidth"], answer:1, explanation:"Online reputation is shaped by your posts, comments, and interactions on digital platforms."},
+      // Medium (12)
+      {q:"Analog signals are:", options:["Discrete","Continuous","Binary","Encrypted"], answer:1, explanation:"Analog signals vary smoothly and continuously over time, unlike digital signals."},
+      {q:"Which of the following is NOT a component of a digital communication system?", options:["Encoder","Output Transducer","Solar Panel","Modulator"], answer:2, explanation:"A solar panel is unrelated to digital communication; the main components are encoder, modulator, transmitter, channel, and receiver."},
+      {q:"Which unit comes after a Megabyte (MB)?", options:["Kilobyte","Gigabyte","Terabyte","Byte"], answer:1, explanation:"Memory units increase in order: Byte → Kilobyte → Megabyte → Gigabyte → Terabyte."},
+      {q:"Digital signals are more reliable for long-distance communication because:", options:["They degrade quickly","They are affected by noise","They are less affected by noise","They require analog modulation"], answer:2, explanation:"Digital signals maintain their integrity better than analog signals over long distances."},
+      {q:"Digital media includes:", options:["Blogs and eBooks","Vinyl records","Analog TV","Paper newspapers"], answer:0, explanation:"Digital media exists in electronic form and can be accessed via computers or the internet."},
+      {q:"Broadband transmission:", options:["Uses entire bandwidth","Transmits multiple signals simultaneously","Only works in LAN","Is always analog"], answer:1, explanation:"Broadband allows simultaneous transmission of multiple signals over a wide frequency range."},
+      {q:"Which of the following is a negative impact of digital technology?", options:["Online learning","Digital addiction","Video calling","E-learning"], answer:1, explanation:"Digital addiction can affect mental health and social interactions if usage is excessive."},
+      {q:"Video editing involves:", options:["Installing software","Altering video footage to create a final product","Only capturing video","Making a video analog"], answer:1, explanation:"Video editing is the process of modifying and arranging video clips to produce a final version."},
+      {q:"Digital citizenship emphasizes:", options:["Using as much data as possible","Responsible, ethical, and legal use of technology","Avoiding technology","Only social media use"], answer:1, explanation:"Digital citizenship focuses on ethical, safe, and responsible use of digital tools and platforms."},
+      {q:"Which of these is NOT a step in video editing?", options:["Trim and arrange clips","Insert titles","Cooking recipes","Export final video"], answer:2, explanation:"Cooking recipes are unrelated to video editing; steps include trimming, arranging, adding effects, and exporting."},
+      {q:"Baseband transmission does not require:", options:["Entire bandwidth","Modulation","Short-distance communication","Data transfer"], answer:1, explanation:"Baseband transmission sends signals directly without modulation, suitable for short distances."},
+      {q:"A digital signal is less affected by noise because it is:", options:["Continuous","Analog","Binary","Voltage-based"], answer:2, explanation:"Binary signals (0s and 1s) are easier to distinguish and less prone to noise interference than analog signals."},
+      // Hard (10)
+      {q:"Sequence of memory units from smallest to largest?", options:["Bit → Byte → Kilobyte → Megabyte → Gigabyte → Terabyte","Byte → Bit → KB → MB → GB → TB","Bit → Kilobyte → Byte → MB → GB → TB","Bit → MB → Byte → KB → GB → TB"], answer:0, explanation:"The standard sequence is Bit → Byte → Kilobyte → Megabyte → Gigabyte → Terabyte."},
+      {q:"In digital communication, the modulator’s function is:", options:["Receive signals from the channel","Modify the signal to be carried over the medium","Convert data into binary","Encode the original message"], answer:1, explanation:"The modulator converts digital data into a form suitable for transmission over the communication channel."},
+      {q:"Which feature distinguishes analog from digital communication?", options:["Noise resistance","Continuous signals","Binary representation","Data compression"], answer:1, explanation:"Analog communication uses continuous signals, while digital uses discrete binary signals."},
+      {q:"Which software can be used for mobile video editing?", options:["Final Cut Pro","CapCut","Adobe Premiere Pro","Davinci Resolve"], answer:1, explanation:"CapCut is popular mobile video editing software that allows users to edit videos directly on smartphones."},
+      {q:"Signal transmission requires all the following except:", options:["Transmitter","Modulation","Duplexing","Hubble’s constant"], answer:3, explanation:"Hubble’s constant is related to astronomy, not signal transmission."},
+      {q:"Main advantage of digital transmission over analog is:", options:["Continuous waveform","Less reliability","High-speed data transfer and noise immunity","Higher sensitivity to interference"], answer:2, explanation:"Digital transmission enables faster data transfer and is less affected by noise compared to analog signals."},
+      {q:"Which best describes digital wellbeing?", options:["Using unlimited screen time","Avoiding harmful content and balancing online/offline life","Ignoring parental controls","Uploading videos constantly"], answer:1, explanation:"Digital wellbeing involves safe, responsible, and balanced use of technology."},
+      {q:"If a system uses digital signals that can be compressed and encrypted, it is mainly for:", options:["Analog broadcasting","Reliable long-distance communication","Short-wave radio","Infrared heating"], answer:1, explanation:"Digital signals can be compressed and encrypted to ensure secure and reliable long-distance communication."},
+      {q:"In digital communication, the demodulator:", options:["Converts electrical signal to physical form","Converts signal back to original form","Encodes source data","Controls bandwidth"], answer:1, explanation:"The demodulator recovers the original data from the modulated signal received over the channel."},
+      {q:"Which is true about ICT in modern society?", options:["Only used for hardware maintenance","Plays a vital role in communication, data sharing, and media creation","Used only in gaming","Limited to analog systems"], answer:1, explanation:"ICT is essential in modern society for communication, education, business, and media creation."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

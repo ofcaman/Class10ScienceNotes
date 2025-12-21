@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10 Quiz – Universe & Cosmology</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"The universe is approximately how old?", options:["4.6 billion years","13.8 billion years","10 billion years","100 billion years"], answer:1, explanation:"The universe is estimated to be about 13.8 billion years old."},
+      {q:"Cosmology is the study of:", options:["Stars only","Galaxies only","Universe as a whole","Solar system"], answer:2, explanation:"Cosmology studies the origin, structure, and evolution of the universe."},
+      {q:"Hubble observed that galaxies are:", options:["Moving randomly","Stationary","Moving away from us","Collapsing"], answer:2, explanation:"Edwin Hubble found galaxies recede from us, showing universe expansion."},
+      {q:"The gravitational force:", options:["Causes planets to escape","Holds planets in orbit","Has no effect in space","Acts only on stars"], answer:1, explanation:"Gravity keeps planets in orbit and binds galaxies together."},
+      {q:"Redshift of galaxies is evidence of:", options:["Contraction of universe","Rotation of planets","Expansion of universe","Black hole formation"], answer:2, explanation:"Redshift shows galaxies moving away → universe is expanding."},
+      {q:"Critical density is the density:", options:["To cause universe collapse","Needed to stop expansion over infinite time","Of a neutron star","Inside black holes"], answer:1, explanation:"Critical density balances expansion; if mean density = critical density → flat universe."},
+      {q:"Mean density greater than critical density leads to:", options:["Open universe","Flat universe","Closed universe","Infinite universe"], answer:2, explanation:"ρmean > ρc → gravity dominates → universe eventually collapses."},
+      {q:"Centripetal force on a planet is provided by:", options:["Sun’s light","Gravitational attraction","Atmospheric pressure","Magnetic field"], answer:1, explanation:"Gravity pulls planets toward the Sun, acting as centripetal force."},
+      // Medium (12)
+      {q:"Which of the following telescopes is space-based?", options:["Radio telescope","Hubble telescope","Optical ground telescope","Spectroscope"], answer:1, explanation:"Hubble Space Telescope operates above Earth’s atmosphere."},
+      {q:"Big Bang theory suggests the universe began as:", options:["A galaxy","A black hole","A singular point of infinite density","A large star"], answer:2, explanation:"Universe originated from a singularity ~13.8 billion years ago."},
+      {q:"Cosmic Microwave Background Radiation (CMBR) supports:", options:["Existence of planets","Big Bang theory","Formation of black holes","Gravitational lensing"], answer:1, explanation:"CMBR is leftover radiation from early universe expansion."},
+      {q:"Hubble’s Law formula is:", options:["v = d/H0","v = H0 × d","v = H0 + d","v = H0/d"], answer:1, explanation:"Velocity of galaxy receding is proportional to its distance (v = H0 × d)."},
+      {q:"If centrifugal force on a planet > centripetal force:", options:["Planet collapses inward","Planet escapes orbit","Planet stops moving","Nothing changes"], answer:1, explanation:"Outward centrifugal force dominates → planet may escape orbit."},
+      {q:"The observable universe is approximately:", options:["13.8 billion light years","93 billion light years","100 million light years","50 billion light years"], answer:1, explanation:"Observable universe is ~93 billion light years across."},
+      {q:"Dark energy constitutes roughly what fraction of the universe?", options:["10%","30%","50%","70%"], answer:3, explanation:"Dark energy (~70%) drives accelerated expansion."},
+      {q:"Flat universe occurs when:", options:["ρmean < ρc","ρmean = ρc","ρmean > ρc","Universe contracts"], answer:1, explanation:"Mean density equals critical density → universe expands slowly forever."},
+      {q:"Spectroscopy in astronomy is used to study:", options:["Planet motion","Star temperature and composition","Moon phases","Orbital speed only"], answer:1, explanation:"Spectroscopy analyzes light spectra to determine star/galaxy properties."},
+      {q:"James Webb Space Telescope helps study:", options:["Neutron stars","Earliest galaxies","Solar system only","Black hole interiors"], answer:1, explanation:"JWST can observe galaxies formed close to Big Bang."},
+      {q:"Continuous expansion of universe leads to:", options:["Big Crunch","Hot, dense universe","Cold, dark universe","Flat universe"], answer:2, explanation:"Open universe expands forever → galaxies drift apart, universe cools."},
+      {q:"Hubble’s constant H0 has approximate value:", options:["50 km/s per Mpc","70 km/s per Mpc","100 km/s per Mpc","10 km/s per Mpc"], answer:1, explanation:"Observations suggest H0 ≈ 70 km/s per megaparsec."},
+      // Hard (10)
+      {q:"Mean density of universe formula:", options:["ρmean = mass / area","ρmean = mass / volume","ρmean = volume / mass","ρmean = H0 / G"], answer:1, explanation:"Mean density = total mass / total volume of universe."},
+      {q:"Critical density formula:", options:["ρc = 3 × H0² / (8πG)","ρc = H0² / G","ρc = G / H0²","ρc = 3G / 8πH0²"], answer:0, explanation:"ρc = (3 × H0²)/(8πG) determines balanced universe."},
+      {q:"Which scenario represents a closed universe?", options:["ρmean = ρc","ρmean < ρc","ρmean > ρc","ρmean = 0"], answer:2, explanation:"Mean density greater than critical → gravity dominates → eventual collapse."},
+      {q:"Evidence of Big Bang does NOT include:", options:["Redshift of galaxies","Cosmic microwave background radiation","Abundance of hydrogen and helium","Planetary orbits"], answer:3, explanation:"Planetary orbits are unrelated to universe origin."},
+      {q:"If a galaxy is twice as far, its velocity according to Hubble’s law is:", options:["Same","Half","Double","Square"], answer:2, explanation:"v = H0 × d → velocity ∝ distance."},
+      {q:"Centripetal and centrifugal forces in balance ensure:", options:["Galaxies collapse","Planets remain in stable orbit","Universe stops expanding","Big Bang occurs"], answer:1, explanation:"Balanced forces keep planets, moons, and galaxies stable."},
+      {q:"An open universe implies:", options:["Finite and eventually collapses","Infinite and keeps expanding","Expansion stops eventually","Critical density = mean density"], answer:1, explanation:"ρmean < ρc → expansion dominates → infinite universe."},
+      {q:"A neutron star is so dense that 1 teaspoon weighs:", options:["Kilograms","Tons","Millions of tons","Billions of tons"], answer:3, explanation:"Neutron stars have extreme density → 1 tsp ≈ billions of tons."},
+      {q:"The fate of the universe depends mainly on:", options:["Mass of Sun","Balance between expansion and gravity","Planetary orbits","Speed of light"], answer:1, explanation:"Expansion vs gravitational pull determines open, flat, or closed universe."},
+      {q:"Galaxies themselves do not expand because:", options:["Gravity binds them","Dark energy acts inside","Universe is flat","Light pressure holds them"], answer:0, explanation:"Gravity within galaxies prevents them from expanding; only space between galaxies expands."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

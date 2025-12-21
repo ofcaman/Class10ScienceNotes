@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 16 Quiz – Gases and Atmospheric Chemistry</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"Gases:", options:["Have a fixed shape and volume","Do not have a fixed shape or volume","Are incompressible","Have high density"], answer:1, explanation:"Gases have neither a fixed shape nor a fixed volume; they expand to fill their container."},
+      {q:"Carbon dioxide (CO₂) is:", options:["Colorless, odorless, tasteless","Supports combustion","Lighter than air","Explosive"], answer:0, explanation:"CO₂ is colorless, odorless, and tasteless and does not support combustion."},
+      {q:"CO₂ gas turns lime water:", options:["Red","Blue","Milky","Green"], answer:2, explanation:"CO₂ reacts with calcium hydroxide (lime water) to form calcium carbonate, which turns the solution milky."},
+      {q:"Ammonia (NH₃) gas is:", options:["Colorless with pungent smell","Heavier than air","Acidic in nature","Insoluble in water"], answer:0, explanation:"NH₃ is a colorless gas with a strong, pungent odor and is basic in nature."},
+      {q:"Fire extinguishers use which gas to put out fire?", options:["NH₃","O₂","CO₂","N₂"], answer:2, explanation:"CO₂ extinguishes fire by displacing oxygen and cooling the flames."},
+      {q:"NH₃ gas turns red litmus paper:", options:["Red","Blue","Colorless","Green"], answer:1, explanation:"NH₃ is basic and turns red litmus paper blue."},
+      {q:"Which gas is heavier than air?", options:["NH₃","CO₂","H₂","CH₄"], answer:1, explanation:"CO₂ is denser than air, while NH₃, H₂, and CH₄ are lighter."},
+      {q:"Gases can be collected by:", options:["Downward displacement of air","Upward displacement of water","Direct inhalation","Filtration"], answer:0, explanation:"Heavier-than-air gases are collected by downward displacement of air in the laboratory."},
+      // Medium (12)
+      {q:"Word equation for CO₂ preparation:", options:["CaCO₃ + H₂O → CaO + CO₂","CaCO₃ + HCl → CaCl₂ + H₂O + CO₂","NH₄Cl + Ca(OH)₂ → NH₃ + CaCl₂ + H₂O","NaHCO₃ → Na₂CO₃ + CO₂ + H₂O"], answer:1, explanation:"CaCO₃ reacts with HCl to produce CO₂ gas, calcium chloride, and water."},
+      {q:"Laboratory preparation of NH₃ uses:", options:["NH₄Cl + HCl","NH₄Cl + Ca(OH)₂","NH₄Cl + NaOH","NH₃ + HCl"], answer:1, explanation:"NH₄Cl reacts with Ca(OH)₂ to liberate NH₃ gas in the laboratory."},
+      {q:"CO₂ does not support:", options:["Photosynthesis","Combustion","Carbonation","Fire extinguishing"], answer:1, explanation:"CO₂ does not support combustion but is used in carbonation and fire extinguishers."},
+      {q:"NH₃ reacts with HCl to form:", options:["NH₄OH","NH₄Cl fumes","NO₂","N₂ + H₂"], answer:1, explanation:"NH₃ reacts with HCl gas to form white fumes of ammonium chloride (NH₄Cl)."},
+      {q:"Which gas is highly soluble in water?", options:["CO₂","NH₃","H₂","O₂"], answer:1, explanation:"NH₃ is highly soluble in water due to hydrogen bonding."},
+      {q:"CO₂ is used in:", options:["Fertilizers","Fire extinguishers","Textile industry","Refrigerants"], answer:1, explanation:"CO₂ is commonly used in fire extinguishers to put out fires."},
+      {q:"NH₃ is used as:", options:["Carbonation agent","Fertilizer production","Fire extinguishing","Photosynthesis"], answer:1, explanation:"NH₃ is a key raw material for manufacturing fertilizers like ammonium nitrate."},
+      {q:"Ammonia is collected in the lab by:", options:["Upward displacement of air","Downward displacement of air","Over water","Sublimation"], answer:1, explanation:"NH₃ is lighter than air and is collected by upward displacement of air (rise to top), but in practice, downward displacement can be used if air displacement method is applied carefully."},
+      {q:"The pungent smell of NH₃ indicates:", options:["Toxicity","Alkalinity","Combustion","Acidity"], answer:1, explanation:"NH₃ has a pungent odor which indicates its basic (alkaline) nature."},
+      {q:"Greenhouse gases trap:", options:["Oxygen","Heat","Carbon monoxide","Dust"], answer:1, explanation:"Greenhouse gases trap heat in the atmosphere, contributing to global warming."},
+      {q:"Major cause of greenhouse effect is:", options:["Fossil fuel burning","Rainfall","Photosynthesis","Acid rain"], answer:0, explanation:"Burning fossil fuels releases CO₂, a major greenhouse gas."},
+      {q:"Artificial greenhouses help in:", options:["Reducing CO₂","Maintaining controlled temperature for plants","Acid rain formation","Reducing ozone depletion"], answer:1, explanation:"Artificial greenhouses maintain a controlled environment to optimize plant growth."},
+      // Hard (10)
+      {q:"Word equation for NH₃ preparation in lab is:", options:["NH₄Cl + H₂O → NH₃ + HCl","NH₄Cl + Ca(OH)₂ → NH₃ + CaCl₂ + H₂O","NH₃ + HCl → NH₄Cl","NH₄Cl + NaOH → NH₃ + NaCl + H₂O"], answer:1, explanation:"NH₄Cl reacts with Ca(OH)₂ to produce NH₃ gas, CaCl₂, and water."},
+      {q:"Reaction of CO₂ with basic oxides forms:", options:["Carbonates","Hydroxides","Acids","Salts only"], answer:0, explanation:"CO₂ reacts with metal oxides (basic) to form carbonates."},
+      {q:"Which property differentiates NH₃ from CO₂?", options:["Color","Solubility in water and density","Combustion","Taste"], answer:1, explanation:"NH₃ is lighter than air and highly soluble in water, unlike CO₂ which is denser."},
+      {q:"Acid rain contains:", options:["Sulphuric and nitric acids","Carbonic acid only","Hydrochloric acid only","Ammonium salts only"], answer:0, explanation:"Acid rain contains H₂SO₄ and HNO₃ formed from SO₂ and NO₂ in the atmosphere."},
+      {q:"SO₂ + O₂ → SO₃; SO₃ + H₂O → H₂SO₄ describes formation of:", options:["Carbonic acid","Sulphuric acid","Nitric acid","Ammonia"], answer:1, explanation:"SO₂ oxidizes to SO₃, which reacts with water to produce H₂SO₄ (sulfuric acid)."},
+      {q:"Effects of acid rain include:", options:["Fertilizing soil","Corroding metals and damaging buildings","Increasing photosynthesis","Neutralizing CO₂"], answer:1, explanation:"Acid rain damages infrastructure and corrodes metals due to its acidic nature."},
+      {q:"Methods to reduce greenhouse effect include:", options:["Burning more fossil fuels","Afforestation and renewable energy","Deforestation","Industrial emissions increase"], answer:1, explanation:"Planting trees and using renewable energy help reduce CO₂ and mitigate greenhouse effects."},
+      {q:"CO₂ in fire extinguisher works by:", options:["Raising temperature","Cutting oxygen and cooling fire","Producing water","Reacting with smoke"], answer:1, explanation:"CO₂ extinguishes fire by displacing oxygen and lowering temperature."},
+      {q:"NH₃ reduces copper oxide to:", options:["CuO","Cu","CuCl₂","CuSO₄"], answer:1, explanation:"NH₃ can act as a reducing agent to reduce CuO to metallic copper."},
+      {q:"Acid rain is formed due to:", options:["Dissolved CO₂ only","Dissolved SO₂ and NO₂","Dissolved O₂","Dissolved H₂O only"], answer:1, explanation:"Dissolved SO₂ and NO₂ in rainwater produce sulfuric and nitric acids, causing acid rain."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+    questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<resources>
+    <dimen name="screen_padding">16dp</dimen>
+    <dimen name="card_margin_top">24dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_max_width">600dp</dimen>
+    <dimen name="card_inner_padding">16dp</dimen>
+    <dimen name="lecture_item_margin">24dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="copyright_margin_top">24dp</dimen>
+    <dimen name="lecture_item_padding">8dp</dimen>
+    <dimen name="lecture_icon_size">56dp</dimen>
+    <dimen name="lecture_content_margin_start">16dp</dimen>
+    <dimen name="lecture_count_margin_top">4dp</dimen>
+    <dimen name="video_icon_size">24dp</dimen>
+    <dimen name="lecture_count_margin_start">8dp</dimen>
+    <dimen name="card_border_width">1dp</dimen>
+    <dimen name="message_margin_small">16dp</dimen>
+    <dimen name="message_margin_large">48dp</dimen>
+    <dimen name="message_margin_start">64dp</dimen>
+    <dimen name="message_margin_end">16dp</dimen>
+    <dimen name="message_margin_vertical">4dp</dimen>
+    <dimen name="action_bar_size">56dp</dimen>
+
+    <!-- Approximate status bar height -->
+    <dimen name="status_bar_height">24dp</dimen>
+
+    <!-- Toolbar height = action bar + status bar -->
+    <dimen name="toolbar_height_with_status">80dp</dimen>
+
+</resources>
+

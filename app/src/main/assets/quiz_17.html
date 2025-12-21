@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 17 Quiz – Metals, Non-Metals, and Metallurgy</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"Metals are generally:", options:["Brittle solids","Shiny and malleable","Poor conductors","Gaseous"], answer:1, explanation:"Metals are typically lustrous, malleable, and good conductors of heat and electricity."},
+      {q:"Non-metals usually:", options:["Conduct electricity","Are ductile","Are brittle and non-lustrous","Have high melting points"], answer:2, explanation:"Non-metals are usually brittle when solid and lack metallic luster."},
+      {q:"Mercury is an exception among metals because it is:", options:["Solid at room temperature","Liquid at room temperature","Gas at room temperature","Brittle"], answer:1, explanation:"Mercury is unique among metals as it is liquid at room temperature."},
+      {q:"Malleability refers to:", options:["Ability to conduct heat","Ability to be hammered into thin sheets","Ability to form positive ions","Ability to shine"], answer:1, explanation:"Malleability is the property of metals that allows them to be hammered or rolled into thin sheets."},
+      {q:"Ductility means:", options:["Can be drawn into wires","Can conduct electricity","Can be hammered","Can corrode"], answer:0, explanation:"Ductility is the ability of a metal to be stretched into thin wires."},
+      {q:"Silver is the best:", options:["Conductor of heat","Conductor of electricity","Malleable metal","Brittle metal"], answer:1, explanation:"Silver has the highest electrical conductivity of all metals."},
+      {q:"Ore is:", options:["Any mineral","Mineral containing metal in profitable form","Metal in pure form","Non-metallic substance"], answer:1, explanation:"An ore is a naturally occurring mineral from which a metal can be extracted profitably."},
+      {q:"Aluminium is obtained mainly from which ore?", options:["Hematite","Bauxite","Magnetite","Chalcopyrite"], answer:1, explanation:"Aluminium is primarily extracted from bauxite ore."},
+      // Medium (12)
+      {q:"Hematite has the molecular formula:", options:["Fe₃O₄","Fe₂O₃","FeCO₃","FeS₂"], answer:1, explanation:"Hematite is an iron oxide with the formula Fe₂O₃."},
+      {q:"Which copper ore is green in color?", options:["Cuprite","Chalcopyrite","Malachite","Argentite"], answer:2, explanation:"Malachite is a green copper carbonate ore."},
+      {q:"Froth flotation is mainly used for:", options:["Oxide ores","Sulphide ores","Carbonate ores","Magnetic ores"], answer:1, explanation:"Froth flotation separates sulphide ores from gangue using differences in surface properties."},
+      {q:"Calcination involves:", options:["Heating in presence of air","Heating in absence of air","Magnetic separation","Electrolysis"], answer:1, explanation:"Calcination is the heating of ores in the absence of air to remove volatile impurities."},
+      {q:"Roasting involves:", options:["Heating in absence of air","Heating in air","Dissolving in acid","Electrolytic refining"], answer:1, explanation:"Roasting heats ores in air to convert sulphides into oxides."},
+      {q:"Distillation is used for:", options:["High melting metals","Low boiling point metals","Sulphide ores","Carbonates"], answer:1, explanation:"Metals with low boiling points, such as zinc, are purified by distillation."},
+      {q:"Electro-refining works by:", options:["Impure metal as cathode","Pure metal as anode","Impure metal as anode, pure metal deposited at cathode","Dissolving metals in acid"], answer:2, explanation:"Impure metal is used as anode, and pure metal is deposited on cathode during electro-refining."},
+      {q:"Gravity separation works on the basis of:", options:["Magnetic property","Density difference","Solubility","Electrical conductivity"], answer:1, explanation:"Gravity separation separates ores from gangue based on density differences."},
+      {q:"Bauxite is also called:", options:["“Metal of the future”","“King of metals”","“Heavy metal ore”","“Transition metal ore”"], answer:0, explanation:"Bauxite is called “metal of the future” because it is the primary source of aluminium."},
+      {q:"Magnetite is:", options:["Non-magnetic","Magnetic iron ore","Aluminium ore","Copper ore"], answer:1, explanation:"Magnetite is an iron ore with magnetic properties."},
+      {q:"Non-metals form:", options:["Cations","Anions","Alloys","All of the above"], answer:1, explanation:"Non-metals generally gain electrons to form negatively charged ions (anions)."},
+      {q:"Metals generally:", options:["Gain electrons","Lose electrons","Do not react","Form acidic oxides"], answer:1, explanation:"Metals usually lose electrons to form positive ions (cations)."},
+      // Hard (10)
+      {q:"Cryolite (Na₃AlF₆) is used in:", options:["Aluminium ore","Aluminium extraction process","Making copper","Making gold"], answer:1, explanation:"Cryolite is used as a flux in the electrolytic extraction of aluminium."},
+      {q:"Which of the following is a carbonate ore of iron?", options:["Hematite","Magnetite","Siderite","Limonite"], answer:2, explanation:"Siderite is an iron carbonate ore with formula FeCO₃."},
+      {q:"Chalcopyrite is:", options:["Cu₂O","CuFeS₂","CuCO₃·Cu(OH)₂","Ag₂S"], answer:1, explanation:"Chalcopyrite is a copper iron sulphide ore with formula CuFeS₂."},
+      {q:"Corundum (Al₂O₃) is mainly used as:", options:["Ore for aluminium","Abrasive and gemstone","Fertilizer","Fire extinguisher"], answer:1, explanation:"Corundum is a hard material used in abrasives and gemstones."},
+      {q:"Smelting is:", options:["Dissolving metal in water","Melting ore and reducing with reducing agent","Refining by electrolysis","Roasting carbonate ores"], answer:1, explanation:"Smelting involves melting ores and reducing them chemically to obtain metals."},
+      {q:"Leaching is suitable when:", options:["Ore is soluble in acid or alkali","Ore is magnetic","Ore is heavy oxide","Ore is sulphide"], answer:0, explanation:"Leaching extracts metals from ores that are soluble in acidic or alkaline solutions."},
+      {q:"Sylvanite (Ag,Au)Te₂ is an ore of:", options:["Silver","Gold","Copper","Aluminium"], answer:1, explanation:"Sylvanite contains gold (Au) and is a gold ore."},
+      {q:"Which of the following metals is most ductile?", options:["Silver","Gold","Aluminium","Iron"], answer:1, explanation:"Gold is extremely ductile and can be drawn into very thin wires."},
+      {q:"Zinc is usually refined by:", options:["Distillation","Electro-refining","Roasting","Magnetic separation"], answer:0, explanation:"Zinc, having a low boiling point, is purified by distillation."},
+      {q:"The first step in metallurgical process is:", options:["Concentration of ore","Crushing and grinding","Reduction","Refining"], answer:1, explanation:"Metallurgical processes begin with crushing and grinding the ore to increase surface area for further processing."}
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // ✅ Fix: shuffle options but keep answer index updated
+    function shuffleOptions(question) {
+      let correctAnswerText = question.options[question.answer];
+      shuffle(question.options);
+      question.answer = question.options.indexOf(correctAnswerText);
+    }
+
+    // Shuffle each question's options
+    questions.forEach(q => shuffleOptions(q));
+    // Shuffle order of questions
+    shuffle(questions);
+
+    let current = 0, correct = 0, incorrect = 0;
+    const quizContainer = document.getElementById("quiz-container");
+    const currentQ = document.getElementById("current-question");
+    const totalQ = document.getElementById("total-questions");
+    const correctCount = document.getElementById("correct-count");
+    const incorrectCount = document.getElementById("incorrect-count");
+    const scorePercent = document.getElementById("score-percent");
+    const progressBar = document.getElementById("progress-bar");
+    const summary = document.getElementById("summary");
+
+    totalQ.textContent = questions.length;
+
+    function showQuestion() {
+      if (current >= questions.length) { showSummary(); return; }
+      const q = questions[current];
+      quizContainer.innerHTML = `<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent = current+1;
+      progressBar.style.width = ((current)/questions.length*100)+"%";
+      progressBar.textContent = Math.round((current)/questions.length*100)+"%";
+
+      const options = quizContainer.querySelectorAll("input[name=option]");
+      const labels = quizContainer.querySelectorAll("label");
+      const explanation = quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if (i===q.answer) { labels[i].classList.add("correct"); correct++; }
+          else { labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++; }
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore() {
+      correctCount.textContent = correct;
+      incorrectCount.textContent = incorrect;
+      let percent = Math.round((correct/(correct+incorrect))*100) || 0;
+      scorePercent.textContent = percent+"%";
+    }
+
+    function showSummary() {
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent = Math.round((correct/questions.length)*100);
+      summary.innerHTML = `<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

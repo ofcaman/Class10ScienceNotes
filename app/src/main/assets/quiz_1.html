@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1 Quiz – Introduction to Scientific Learning</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Which of the following is NOT a step of the scientific method?", options:["Observation","Hypothesis","Guessing","Experiment"], answer:2, explanation:"Guessing is not a formal step; hypotheses are based on observation and reasoning."},
+      {q:"The variable you change to observe effects is called the:", options:["Dependent Variable","Controlled Variable","Independent Variable","Extraneous Variable"], answer:2, explanation:"The independent variable is manipulated by the experimenter to see its effect."},
+      {q:"Which SI unit is used to measure length?", options:["Kilogram","Metre","Second","Newton"], answer:1, explanation:"The metre (m) is the SI base unit of length."},
+      {q:"What does “SI” in SI units stand for?", options:["Scientific International","System of International Units","International System of Units","Standardized International"], answer:2, explanation:"SI stands for Système International d’unités (International System of Units)."},
+      {q:"The process of checking the units on both sides of an equation is called:", options:["Unit comparison","Dimensional analysis","Unit matching","Variable testing"], answer:1, explanation:"Dimensional analysis ensures LHS and RHS units match for correctness."},
+      {q:"Which of these is a derived unit?", options:["Metre","Kilogram","Newton","Mole"], answer:2, explanation:"Newton (kg·m/s²) is derived from fundamental units."},
+      {q:"In “I = I change”, the first I stands for:", options:["Independent Variable","Intensity","Initial value","Integer"], answer:0, explanation:"The mnemonic helps remember Independent Variable is what “I” change."},
+      {q:"Which type of variable remains the same throughout an experiment?", options:["Dependent","Controlled","Extraneous","Independent"], answer:1, explanation:"Controlled variables are kept constant to ensure fairness in experiments."},
+      {q:"The SI unit of electric current is:", options:["Joule","Ampere","Watt","Volt"], answer:1, explanation:"Ampere (A) measures electric current."},
+      {q:"The main purpose of the scientific method is to:", options:["Guess outcomes","Prove personal opinions","Systematically understand natural phenomena","Avoid experimentation"], answer:2, explanation:"Scientific methods involve structured steps to uncover laws of nature."},
+      // Medium Level
+      {q:"Which of the following is an extraneous variable in a plant growth experiment?", options:["Amount of sunlight","Type of plant","Plant height","Temperature"], answer:3, explanation:"Temperature is not the main focus but can affect results unintentionally."},
+      {q:"Which of the following is NOT a fundamental unit?", options:["Candela","Kelvin","Newton","Mole"], answer:2, explanation:"Newton is derived from fundamental units."},
+      {q:"The equation for force is F = m × a. The unit of F from this is:", options:["kg·m/s²","m/s²","kg/m²","N·s"], answer:0, explanation:"Multiplying kg by m/s² gives kg·m/s², which is a Newton."},
+      {q:"What does the “analysis” step in the scientific method involve?", options:["Guessing","Drawing graphs, interpreting data","Repeating experiments blindly","Discarding failed results"], answer:1, explanation:"Analysis means processing data to find patterns or conclusions."},
+      {q:"Which statement about controlled variables is correct?", options:["They change constantly","They are not recorded","They are kept the same throughout the experiment","They determine the dependent variable"], answer:2, explanation:"Controlled variables prevent external factors from influencing results."},
+      {q:"Which metric unit is 1/100 of a metre?", options:["Millimetre","Centimetre","Decimetre","Kilometre"], answer:1, explanation:"Centi means 1/100 of the base unit."},
+      {q:"Why does dimensional correctness not guarantee numerical correctness?", options:["Because units may be wrong","Because numbers may be incorrect even if units match","Because SI units are not universal","Because measurements are always approximate"], answer:1, explanation:"An equation can be dimensionally valid but still yield wrong numerical results."},
+      {q:"Which SI base unit measures the amount of substance?", options:["Mole","Candela","Kelvin","Ampere"], answer:0, explanation:"Mole (mol) measures the quantity of matter in terms of particles."},
+      {q:"“King Henry Died By Drinking Chocolate Milk” helps remember:", options:["Variable types","Metric unit prefixes","Scientific method steps","Equation derivations"], answer:1, explanation:"It’s a mnemonic for kilo, hecto, deca, base, deci, centi, milli."},
+      {q:"If speed = distance/time, and distance is in metres and time in seconds, the unit of speed is:", options:["m/s","m·s","s/m","m²/s"], answer:0, explanation:"Metres per second (m/s) is the standard speed unit."},
+      {q:"The SI unit of luminous intensity is:", options:["Lumen","Candela","Lux","Watt"], answer:1, explanation:"Candela is the base unit for luminous intensity."},
+      {q:"Which step of the scientific method comes immediately after forming a hypothesis?", options:["Observation","Analysis","Experiment","Conclusion"], answer:2, explanation:"The experiment tests the hypothesis formed after observation."},
+      // Hard Level
+      {q:"In the formula for work, W = F × d, what is the derived SI unit of work?", options:["Joule","Watt","Newton","Pascal"], answer:0, explanation:"Force (Newton) × distance (metre) = Joule (N·m)."},
+      {q:"Which combination of base units gives the unit of power (watt)?", options:["kg·m²/s³","kg·m/s²","kg·m/s³","m²/s²"], answer:0, explanation:"Power = Work/time, Joule/s = (kg·m²/s²)/s = kg·m²/s³."},
+      {q:"A student writes the equation speed = distance × time. Dimensional analysis shows:", options:["It is dimensionally correct","It is dimensionally incorrect","It is correct only for certain units","Cannot be checked"], answer:1, explanation:"Dimensions: m × s ≠ m/s, so it’s wrong."},
+      {q:"Which of the following variables can be both independent and dependent depending on the experiment?", options:["Temperature","Plant type","Soil type","Humidity"], answer:0, explanation:"In some experiments, temperature is controlled; in others, it is the measured outcome."},
+      {q:"Why is Kelvin preferred over Celsius in scientific work?", options:["Kelvin is more accurate","Kelvin avoids negative temperatures","Celsius is not SI accepted","Kelvin is easier to measure"], answer:1, explanation:"Kelvin starts from absolute zero, making it suitable for scientific calculations."},
+      {q:"A formula for area is A = l × b. If l is in cm and b in m, dimensional analysis will:", options:["Show the formula is wrong","Show units need conversion for correctness","Show it’s correct as is","Be impossible"], answer:1, explanation:"Mixed units require conversion before calculation."},
+      {q:"An equation gives force in kg·m/s³. Dimensional analysis reveals:", options:["It’s correct","It’s incorrect","It’s in watts","It’s in joules"], answer:1, explanation:"Force should be kg·m/s²; s³ indicates an error."},
+      {q:"If an equation is dimensionally correct, it means:", options:["It is also numerically correct","It may still be numerically incorrect","The units are wrong","The constants are zero"], answer:1, explanation:"Dimensional correctness ensures unit consistency, not numerical accuracy."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

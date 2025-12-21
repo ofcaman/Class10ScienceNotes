@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5 Quiz – Blood Circulation & Health</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          background: #f4f4f9;
+        }
+        h1 {
+          text-align: center;
+        }
+        .question-box {
+          background: #fff;
+          padding: 20px;
+          margin-top: 20px;
+          border-radius: 10px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .options label {
+          display: block;
+          padding: 10px;
+          margin: 8px 0;
+          background: #f9f9f9;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+        .options input {
+          display: none;
+        }
+        .options label.correct {
+          background: #c8f7c5;
+          border-color: #27ae60;
+          color: #155724;
+        }
+        .options label.wrong {
+          background: #f8d7da;
+          border-color: #c0392b;
+          color: #721c24;
+        }
+        .explanation {
+          margin-top: 15px;
+          padding: 12px;
+          background: #eef5ff;
+          border-left: 4px solid #007bff;
+          border-radius: 4px;
+        }
+        .progress-container {
+          width: 100%;
+          background: #ddd;
+          border-radius: 10px;
+          overflow: hidden;
+          margin: 20px 0;
+        }
+        .progress-bar {
+          height: 20px;
+          width: 0%;
+          background: #007bff;
+          text-align: center;
+          color: #fff;
+          font-size: 12px;
+          line-height: 20px;
+        }
+        .score-board {
+          margin-top: 10px;
+          text-align: center;
+          font-weight: bold;
+        }
+        .summary {
+          text-align: center;
+          margin-top: 30px;
+          padding: 20px;
+          background: #fff;
+          border-radius: 10px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Blood is composed of:", options:["Plasma, RBCs, WBCs, and platelets","Plasma and lymph only","RBCs and hormones only","WBCs and plasma only"], answer:0, explanation:"Blood contains plasma (~55%), RBCs (~45%), and <1% WBCs + platelets."},
+      {q:"The main function of RBCs is:", options:["Fight infections","Transport oxygen","Clot blood","Produce hormones"], answer:1, explanation:"RBCs carry oxygen to tissues and CO₂ to lungs."},
+      {q:"White blood cells (WBCs) are responsible for:", options:["Blood clotting","Fighting infections","Transporting oxygen","Maintaining pH"], answer:1, explanation:"WBCs fight infections, produce antibodies, and respond to allergies."},
+      {q:"Platelets (thrombocytes) help in:", options:["Oxygen transport","Blood clotting","Fighting bacteria","Hormone transport"], answer:1, explanation:"Platelets are cell fragments that assist in clotting and vessel repair."},
+      {q:"The ABO blood group system is determined by:", options:["Hemoglobin","Antigens and antibodies","Platelets","Plasma proteins only"], answer:1, explanation:"Blood types A, B, AB, and O are based on presence/absence of A/B antigens."},
+      {q:"Human heart has:", options:["2 chambers","3 chambers","4 chambers","5 chambers"], answer:2, explanation:"Two atria and two ventricles make four chambers."},
+      {q:"Pulmonary circulation carries blood:", options:["From heart to body tissues","From heart to lungs","From lungs to body tissues","From veins to arteries"], answer:1, explanation:"Pulmonary circulation moves blood from right ventricle → lungs → left atrium."},
+      {q:"Systolic blood pressure occurs when:", options:["Heart relaxes","Heart contracts","Blood flows through veins","Blood leaves capillaries"], answer:1, explanation:"Systolic = pressure during heart contraction."},
+      {q:"Bradycardia refers to a pulse rate:", options:["<60 bpm","60–100 bpm",">100 bpm","120–140 bpm"], answer:0, explanation:"Bradycardia = abnormally slow heart rate."},
+      {q:"Type I diabetes is caused by:", options:["Insulin resistance","Genetic insulin deficiency","Obesity","High sugar intake"], answer:1, explanation:"Type I diabetes results from lack of insulin due to genetic factors."},
+      // Medium Level
+      {q:"Plasma constitutes approximately what percentage of blood?", options:["45%","55%","<1%","70%"], answer:1, explanation:"Plasma forms the liquid portion of blood (~55%)."},
+      {q:"Which WBC type is agranulocyte?", options:["Neutrophil","Lymphocyte","Eosinophil","Basophil"], answer:1, explanation:"Agranulocytes = lymphocytes and monocytes; granulocytes include neutrophils, eosinophils, basophils."},
+      {q:"Veins differ from arteries because:", options:["They have thicker walls","They carry oxygen-rich blood","They have valves","They are microscopic"], answer:2, explanation:"Veins have valves to prevent backflow; arteries carry blood away from the heart."},
+      {q:"Capillaries are important because:", options:["Carry blood under high pressure","Exchange materials between blood and tissues","Pump blood","Produce RBCs"], answer:1, explanation:"Capillaries facilitate nutrient, gas, and waste exchange."},
+      {q:"Which is a symptom of high uric acid levels?", options:["Fatigue","Joint pain, especially in big toe","Frequent urination","Blurred vision"], answer:1, explanation:"High uric acid causes gout, swelling, and redness in joints."},
+      {q:"Pulmonary veins carry:", options:["Deoxygenated blood to lungs","Oxygenated blood to left atrium","Deoxygenated blood to right atrium","Oxygenated blood to body tissues"], answer:1, explanation:"Pulmonary veins return oxygen-rich blood to the left atrium."},
+      {q:"Hypertension Stage 2 BP values are:", options:["120–139 / 80–89","140–159 / 90–99","≥160 / ≥100","<90 / <60"], answer:2, explanation:"Stage 2 hypertension: Systolic ≥160 mmHg, Diastolic ≥100 mmHg."},
+      {q:"Which of these is preventive for hypertension?", options:["High salt diet","Exercise","Smoking","Stress only"], answer:1, explanation:"Exercise, low salt intake, proper sleep, and stress control help prevent hypertension."},
+      {q:"Tachycardia refers to a pulse rate:", options:["<60 bpm","60–100 bpm",">100 bpm","None of the above"], answer:2, explanation:"Tachycardia = abnormally fast heart rate."},
+      {q:"Type II diabetes is mainly caused by:", options:["Genetic insulin deficiency","Insulin resistance due to lifestyle","Viral infection","High RBC count"], answer:1, explanation:"Lifestyle factors like obesity and inactivity cause Type II diabetes."},
+      {q:"One drop of blood contains approximately how many RBCs?", options:["5,000","50,000","5 million","500 million"], answer:2, explanation:"One drop of blood contains ~5 million RBCs."},
+      {q:"Which blood component carries clotting factors?", options:["RBCs","Plasma","WBCs","None"], answer:1, explanation:"Plasma contains clotting factors along with nutrients, hormones, and waste products."},
+      // Hard Level
+      {q:"Blood from left ventricle flows into:", options:["Pulmonary artery","Aorta","Vena cava","Right atrium"], answer:1, explanation:"Systemic circulation starts from left ventricle → aorta → body."},
+      {q:"Which heart condition occurs due to blockage of coronary arteries?", options:["Stroke","Myocardial infarction","Bradycardia","Hypotension"], answer:1, explanation:"Heart attack occurs when blood flow to heart muscle is blocked."},
+      {q:"Forward typing in blood group testing involves:", options:["Adding known RBCs to patient serum","Adding known antibodies to blood sample","Measuring hemoglobin","Counting WBCs"], answer:1, explanation:"Forward typing detects antigens by adding known antibodies."},
+      {q:"Normal diastolic BP is:", options:["<60 mmHg","<80 mmHg","80–89 mmHg","≥100 mmHg"], answer:1, explanation:"Diastolic = pressure during heart relaxation; normal <80 mmHg."},
+      {q:"Which blood cells lack nucleus?", options:["WBCs","Platelets","RBCs","Lymphocytes"], answer:2, explanation:"Mature RBCs are anucleate for optimal oxygen transport."},
+      {q:"In systemic circulation, blood returns to the heart via:", options:["Pulmonary vein","Vena cava","Aorta","Pulmonary artery"], answer:1, explanation:"Systemic circulation collects deoxygenated blood through superior & inferior vena cava to right atrium."},
+      {q:"High-purine foods mainly affect:", options:["Blood pressure","Diabetes","Uric acid levels","Heart rate"], answer:2, explanation:"Purine-rich foods increase uric acid, causing gout."},
+      {q:"Which lifestyle measure helps prevent diabetes?", options:["Balanced diet","Smoking","Excess sugar","Stress only"], answer:0, explanation:"Diet, exercise, weight management, and monitoring blood glucose prevent diabetes."}
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current = 0, correct = 0, incorrect = 0;
+
+    const quizContainer = document.getElementById("quiz-container");
+    const currentQ = document.getElementById("current-question");
+    const totalQ = document.getElementById("total-questions");
+    const correctCount = document.getElementById("correct-count");
+    const incorrectCount = document.getElementById("incorrect-count");
+    const scorePercent = document.getElementById("score-percent");
+    const progressBar = document.getElementById("progress-bar");
+    const summary = document.getElementById("summary");
+
+    totalQ.textContent = questions.length;
+
+    function showQuestion() {
+      if (current >= questions.length) {
+        showSummary();
+        return;
+      }
+      const q = questions[current];
+      quizContainer.innerHTML = `
+        <h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt, i) => `<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>
+      `;
+      currentQ.textContent = current + 1;
+      progressBar.style.width = ((current) / questions.length * 100) + "%";
+      progressBar.textContent = Math.round((current) / questions.length * 100) + "%";
+
+      const options = quizContainer.querySelectorAll("input[name=option]");
+      const labels = quizContainer.querySelectorAll("label");
+      const explanation = quizContainer.querySelector(".explanation");
+
+      options.forEach((opt, i) => {
+        opt.addEventListener("change", () => {
+          labels.forEach(l => l.style.pointerEvents = "none");
+          if (i === q.answer) {
+            labels[i].classList.add("correct");
+            correct++;
+          } else {
+            labels[i].classList.add("wrong");
+            labels[q.answer].classList.add("correct");
+            incorrect++;
+          }
+          explanation.style.display = "block";
+          explanation.textContent = q.explanation;
+          updateScore();
+          setTimeout(() => {
+            current++;
+            showQuestion();
+          }, 3500);
+        });
+      });
+    }
+
+    function updateScore() {
+      correctCount.textContent = correct;
+      incorrectCount.textContent = incorrect;
+      let percent = Math.round((correct / (correct + incorrect)) * 100) || 0;
+      scorePercent.textContent = percent + "%";
+    }
+
+    function showSummary() {
+      quizContainer.style.display = "none";
+      progressBar.style.width = "100%";
+      progressBar.textContent = "100%";
+      summary.style.display = "block";
+      let percent = Math.round((correct / questions.length) * 100);
+      summary.innerHTML = `
+        <h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>
+      `;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4 Quiz – Heredity</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          background: #f4f4f9;
+        }
+        h1 {
+          text-align: center;
+        }
+        .question-box {
+          background: #fff;
+          padding: 20px;
+          margin-top: 20px;
+          border-radius: 10px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .options label {
+          display: block;
+          padding: 10px;
+          margin: 8px 0;
+          background: #f9f9f9;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+        .options input {
+          display: none;
+        }
+        .options label.correct {
+          background: #c8f7c5;
+          border-color: #27ae60;
+          color: #155724;
+        }
+        .options label.wrong {
+          background: #f8d7da;
+          border-color: #c0392b;
+          color: #721c24;
+        }
+        .explanation {
+          margin-top: 15px;
+          padding: 12px;
+          background: #eef5ff;
+          border-left: 4px solid #007bff;
+          border-radius: 4px;
+        }
+        .progress-container {
+          width: 100%;
+          background: #ddd;
+          border-radius: 10px;
+          overflow: hidden;
+          margin: 20px 0;
+        }
+        .progress-bar {
+          height: 20px;
+          width: 0%;
+          background: #007bff;
+          text-align: center;
+          color: #fff;
+          font-size: 12px;
+          line-height: 20px;
+        }
+        .score-board {
+          margin-top: 10px;
+          text-align: center;
+          font-weight: bold;
+        }
+        .summary {
+          text-align: center;
+          margin-top: 30px;
+          padding: 20px;
+          background: #fff;
+          border-radius: 10px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+<h1>Chapter 4 Quiz – Heredity</h1>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Heredity is defined as:", options:["Study of cells","Transmission of traits from parents to offspring","Formation of gametes","Evolution of species"], answer:1, explanation:"Heredity passes traits from one generation to the next."},
+      {q:"Genes are located on:", options:["Ribosomes","Chromosomes","Mitochondria","Cytoplasm"], answer:1, explanation:"Genes are segments of DNA found on chromosomes."},
+      {q:"DNA is structured as a:", options:["Single strand","Double helix","Circular ring","Ladder without twist"], answer:1, explanation:"DNA forms a double helix like a twisted ladder."},
+      {q:"RNA differs from DNA because it contains:", options:["Thymine","Uracil","Guanine","Cytosine"], answer:1, explanation:"RNA has uracil instead of thymine."},
+      {q:"Somatic cells are:", options:["Sex cells","Body cells","Gametes","Stem cells"], answer:1, explanation:"Somatic cells are diploid and make up the body tissues."},
+      {q:"Mitosis produces:", options:["Two identical daughter cells","Four haploid cells","Only gametes","Non-identical cells"], answer:0, explanation:"Mitosis maintains chromosome number in daughter cells."},
+      {q:"Meiosis occurs in:", options:["Somatic cells","Gametogenic cells","Skin cells","Muscle cells"], answer:1, explanation:"Meiosis produces haploid gametes."},
+      {q:"Humans have how many chromosomes?", options:["23","44","46","48"], answer:2, explanation:"Humans have 46 chromosomes: 44 autosomes + 2 sex chromosomes."},
+      {q:"The male sex chromosome combination is:", options:["XX","XY","YY","XO"], answer:1, explanation:"Male sperm determines sex; XY = male."},
+      {q:"The father of Genetics is:", options:["Charles Darwin","Gregor Mendel","Watson and Crick","Louis Pasteur"], answer:1, explanation:"Gregor Mendel conducted pea plant experiments to discover inheritance laws."},
+      // Medium Level
+      {q:"Which of the following is a haploid cell?", options:["Somatic cell","Gamete","Muscle cell","Skin cell"], answer:1, explanation:"Gametes contain half the chromosome number (n)."},
+      {q:"How many phases are there in mitosis?", options:["2","3","4","5"], answer:2, explanation:"Prophase, Metaphase, Anaphase, Telophase."},
+      {q:"Which of the following is a feature of meiosis?", options:["Produces two identical cells","One division only","Introduces genetic variation","Produces diploid cells"], answer:2, explanation:"Meiosis creates genetic diversity and haploid cells."},
+      {q:"Adenine pairs with which base in DNA?", options:["Cytosine","Guanine","Thymine","Uracil"], answer:2, explanation:"A pairs with T in DNA; C pairs with G."},
+      {q:"Which RNA type carries messages from DNA to ribosomes?", options:["mRNA","tRNA","rRNA","snRNA"], answer:0, explanation:"Messenger RNA (mRNA) carries genetic code to ribosomes for protein synthesis."},
+      {q:"Which of the following is a sex chromosome pair in females?", options:["XY","XX","YY","XO"], answer:1, explanation:"Females have XX chromosomes; males XY."},
+      {q:"Dominant traits are expressed when:", options:["Both alleles are recessive","At least one dominant allele is present","Only gametes carry them","Both parents carry the recessive gene"], answer:1, explanation:"One dominant allele is enough for the trait to appear."},
+      {q:"Recessive traits appear when:", options:["Only one allele is recessive","Both alleles are recessive","Dominant allele is present","Gene is mutated"], answer:1, explanation:"Recessive traits require two recessive alleles to show in phenotype."},
+      {q:"Cross-pollination:", options:["Maintains purity","Increases genetic variation","Reduces traits","Produces clones"], answer:1, explanation:"Fertilization between different flowers creates variation."},
+      {q:"Which pea plant cross represents a monohybrid cross?", options:["Tall × Dwarf","Round Yellow × Wrinkled Green","Pea × Bean","All of the above"], answer:0, explanation:"Monohybrid crosses involve one pair of contrasting traits."},
+      {q:"Which of the following techniques helps infertile couples conceive?", options:["Artificial insemination","In-vitro fertilization","Cross-breeding","Selective breeding"], answer:1, explanation:"IVF combines egg and sperm in a lab and implants the embryo."},
+      {q:"Which method fixes desirable traits but may increase genetic disorders?", options:["Cross-breeding","Inbreeding","Line breeding","Artificial insemination"], answer:1, explanation:"Inbreeding concentrates traits but raises risk of inherited diseases."},
+      // Hard Level
+      {q:"During meiosis, when do sister chromatids separate?", options:["Meiosis I","Meiosis II","Prophase I","Telophase I"], answer:1, explanation:"Meiosis II separates sister chromatids to produce haploid cells."},
+      {q:"In a dihybrid cross, the parents differ in:", options:["One trait","Two traits","Three traits","All traits"], answer:1, explanation:"Dihybrid crosses involve two pairs of contrasting traits."},
+      {q:"Recombinant DNA technology is used to:", options:["Make hybrids only","Manipulate genes to improve organisms","Observe chromosomes","Produce gametes"], answer:1, explanation:"Genetic technology can modify or transfer genes for beneficial traits."},
+      {q:"Artificial insemination differs from IVF because:", options:["Sperm fertilizes egg outside the body","Fertilization occurs naturally, sperm introduced artificially","Embryos are implanted","Eggs are not used"], answer:1, explanation:"AI introduces sperm into the female’s uterus without lab fertilization."},
+      {q:"A mule is a result of which type of breeding?", options:["Inbreeding","Line breeding","Cross-breeding","Self-pollination"], answer:2, explanation:"Mule = Horse × Donkey; cross-breeding combines traits of two species."},
+      {q:"Genotype refers to:", options:["Physical appearance","Genetic makeup","Environmental influence","Chromosome number"], answer:1, explanation:"Genotype = allele composition; phenotype = observed trait."},
+      {q:"Which of the following is true about meiosis?", options:["Produces identical cells","Maintains chromosome number","Produces four non-identical haploid cells","Occurs in somatic cells"], answer:2, explanation:"Meiosis reduces chromosome number and creates genetic variation."},
+      {q:"One strand of DNA, when uncoiled, is approximately:", options:["2 centimeters","2 meters","20 meters","2 millimeters"], answer:1, explanation:"DNA is extremely long; a single molecule measures ~2 meters."}
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current = 0, correct = 0, incorrect = 0;
+
+    const quizContainer = document.getElementById("quiz-container");
+    const currentQ = document.getElementById("current-question");
+    const totalQ = document.getElementById("total-questions");
+    const correctCount = document.getElementById("correct-count");
+    const incorrectCount = document.getElementById("incorrect-count");
+    const scorePercent = document.getElementById("score-percent");
+    const progressBar = document.getElementById("progress-bar");
+    const summary = document.getElementById("summary");
+
+    totalQ.textContent = questions.length;
+
+    function showQuestion() {
+      if (current >= questions.length) {
+        showSummary();
+        return;
+      }
+      const q = questions[current];
+      quizContainer.innerHTML = `
+        <h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt, i) => `<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>
+      `;
+      currentQ.textContent = current + 1;
+      progressBar.style.width = ((current) / questions.length * 100) + "%";
+      progressBar.textContent = Math.round((current) / questions.length * 100) + "%";
+
+      const options = quizContainer.querySelectorAll("input[name=option]");
+      const labels = quizContainer.querySelectorAll("label");
+      const explanation = quizContainer.querySelector(".explanation");
+
+      options.forEach((opt, i) => {
+        opt.addEventListener("change", () => {
+          labels.forEach(l => l.style.pointerEvents = "none");
+          if (i === q.answer) {
+            labels[i].classList.add("correct");
+            correct++;
+          } else {
+            labels[i].classList.add("wrong");
+            labels[q.answer].classList.add("correct");
+            incorrect++;
+          }
+          explanation.style.display = "block";
+          explanation.textContent = q.explanation;
+          updateScore();
+          setTimeout(() => {
+            current++;
+            showQuestion();
+          }, 3500);
+        });
+      });
+    }
+
+    function updateScore() {
+      correctCount.textContent = correct;
+      incorrectCount.textContent = incorrect;
+      let percent = Math.round((correct / (correct + incorrect)) * 100) || 0;
+      scorePercent.textContent = percent + "%";
+    }
+
+    function showSummary() {
+      quizContainer.style.display = "none";
+      progressBar.style.width = "100%";
+      progressBar.textContent = "100%";
+      summary.style.display = "block";
+      let percent = Math.round((correct / questions.length) * 100);
+      summary.innerHTML = `
+        <h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>
+      `;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

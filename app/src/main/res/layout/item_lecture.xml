@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/lecture_item_padding">
+
+    <TextView
+        android:id="@+id/lectureIcon"
+        android:layout_width="@dimen/lecture_icon_size"
+        android:layout_height="@dimen/lecture_icon_size"
+        android:background="@drawable/circle_background"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        tools:text="C" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/lecture_content_margin_start"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lectureTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            tools:text="Computer Lectures" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lecture_count_margin_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/video_icon_size"
+                android:layout_height="@dimen/video_icon_size"
+                android:contentDescription="@string/video_icon_description"
+                android:src="@drawable/ic_video"
+                app:tint="@color/video_icon_color" />
+
+            <TextView
+                android:id="@+id/lectureCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/lecture_count_margin_start"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/lecture_count_color"
+                tools:text="5" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+

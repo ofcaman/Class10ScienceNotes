@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2 Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Who is known as the father of modern taxonomy?", options:["Aristotle","Charles Darwin","Carolus Linnaeus","R.H. Whittaker"], answer:2, explanation:"Linnaeus developed the binomial nomenclature system still in use today."},
+      {q:"In binomial nomenclature, the first name refers to the:", options:["Family","Species","Genus","Class"], answer:2, explanation:"The scientific name is written as Genus species."},
+      {q:"Which kingdom contains prokaryotic organisms?", options:["Protista","Fungi","Monera","Plantae"], answer:2, explanation:"Monera includes prokaryotic, unicellular organisms like bacteria."},
+      {q:"“My Papa Found Pizza Amazing” is a mnemonic for:", options:["Steps in photosynthesis","Divisions of Plantae","Five kingdoms","Classes of vertebrates"], answer:2, explanation:"M = Monera, P = Protista, F = Fungi, P = Plantae, A = Animalia."},
+      {q:"Algae are important because they:", options:["Produce nitrogen","Produce over 70% of Earth’s oxygen","Fix carbon dioxide into methane","Are only found on land"], answer:1, explanation:"Algae are major oxygen producers in aquatic ecosystems."},
+      {q:"Which plant group is called “amphibian plants”?", options:["Algae","Bryophyta","Pteridophyta","Gymnospermae"], answer:1, explanation:"Bryophytes need water for fertilization but live on land."},
+      {q:"Which is NOT a monocot plant?", options:["Wheat","Rice","Maize","Mustard"], answer:3, explanation:"Mustard is a dicot."},
+      {q:"The largest animal phylum is:", options:["Arthropoda","Chordata","Mollusca","Annelida"], answer:0, explanation:"Arthropods make up over 80% of all known species."},
+      {q:"Which vertebrate class has moist skin and can live both in water and on land?", options:["Pisces","Amphibia","Reptilia","Mammalia"], answer:1, explanation:"Amphibians include frogs, toads, and salamanders."},
+      {q:"Whales and dolphins belong to the class:", options:["Pisces","Mammalia","Reptilia","Aves"], answer:1, explanation:"They are warm-blooded, give birth, and feed young with milk."},
+      // Medium Level
+      {q:"The kingdom Protista contains:", options:["Multicellular plants","Mostly unicellular eukaryotes","Only fungi","Prokaryotic bacteria"], answer:1, explanation:"Protista includes amoeba, paramecium, and some algae."},
+      {q:"Gymnosperms differ from angiosperms because they:", options:["Have flowers","Have naked seeds","Produce fruits","Lack vascular tissue"], answer:1, explanation:"Gymnosperms produce seeds without fruit covering."},
+      {q:"Which plant group reproduces by spores and has vascular tissues?", options:["Bryophyta","Algae","Pteridophyta","Angiospermae"], answer:2, explanation:"Pteridophytes like ferns have xylem, phloem, and reproduce via spores."},
+      {q:"Which phylum has stinging cells and radial symmetry?", options:["Cnidaria","Porifera","Platyhelminthes","Mollusca"], answer:0, explanation:"Cnidarians like jellyfish have cnidocytes for defense and prey capture."},
+      {q:"Which plant group is the most diverse and produces seeds inside fruits?", options:["Gymnospermae","Angiospermae","Bryophyta","Pteridophyta"], answer:1, explanation:"Angiosperms are flowering plants with seeds enclosed in fruit."},
+      {q:"Which phylum has segmented bodies?", options:["Nematoda","Annelida","Mollusca","Arthropoda"], answer:1, explanation:"Annelids like earthworms have segmented bodies."},
+      {q:"In alternation of generations, the sporophyte stage is:", options:["Haploid","Diploid","Multicellular haploid","Unicellular diploid"], answer:1, explanation:"Sporophytes produce spores and have diploid cells."},
+      {q:"Which of these is a dicot characteristic?", options:["Parallel leaf venation","Fibrous root system","One cotyledon","Tap root"], answer:3, explanation:"Dicots have tap roots and reticulate venation."},
+      {q:"Molluscs are characterized by:", options:["Jointed legs","Soft bodies, often with shells","Radial symmetry in adults","Notochord in all stages"], answer:1, explanation:"Snails and octopuses are molluscs."},
+      {q:"The notochord is present during embryonic development in:", options:["Arthropoda","Mollusca","Chordata","Echinodermata"], answer:2, explanation:"Chordates include fish, amphibians, reptiles, birds, and mammals."},
+      {q:"Which plant division does NOT have vascular tissues?", options:["Pteridophyta","Gymnospermae","Angiospermae","Bryophyta"], answer:3, explanation:"Bryophytes lack xylem and phloem."},
+      {q:"Which class of vertebrates is warm-blooded and lays eggs?", options:["Reptilia","Amphibia","Aves","Mammalia"], answer:2, explanation:"Birds (Aves) are warm-blooded and oviparous."},
+      // Hard Level
+      {q:"Which two features distinguish monocots from dicots?", options:["Flower color and seed type","Cotyledon number and leaf venation","Root type and presence of flowers","Vascular tissue type and reproduction method"], answer:1, explanation:"Monocots have one cotyledon and parallel veins; dicots have two cotyledons and net-like veins."},
+      {q:"Which phylum is radially symmetrical only in the adult stage?", options:["Arthropoda","Echinodermata","Cnidaria","Mollusca"], answer:1, explanation:"Echinoderms have bilateral larvae but radial adult forms."},
+      {q:"Which plant group is considered the first to evolve seeds?", options:["Bryophyta","Pteridophyta","Gymnospermae","Angiospermae"], answer:2, explanation:"Gymnosperms were the first seed-producing plants."},
+      {q:"The presence of a notochord at any stage indicates the organism is in:", options:["Chordata","Mollusca","Arthropoda","Nematoda"], answer:0, explanation:"The defining feature of phylum Chordata is the notochord."},
+      {q:"Why are bryophytes important in ecological succession?", options:["They fix nitrogen","They are pioneer species that colonize bare rocks","They produce flowers early","They decompose quickly"], answer:1, explanation:"Bryophytes prepare the surface for larger plants."},
+      {q:"Which vertebrate class includes both cold-blooded and warm-blooded species?", options:["Mammalia","Aves","None","Amphibia"], answer:2, explanation:"Each vertebrate class is either cold-blooded or warm-blooded, not both."},
+      {q:"Which kingdom includes organisms that are eukaryotic, mostly multicellular, and heterotrophic with cell walls made of chitin?", options:["Plantae","Animalia","Fungi","Protista"], answer:2, explanation:"Fungi are heterotrophs with chitin cell walls."},
+      {q:"The evolutionary relationship between monkeys and humans is indicated by their:", options:["Belonging to the same genus","Belonging to the same phylum","Belonging to the same class","Belonging to the same family only"], answer:2, explanation:"Both are mammals, indicating common ancestry."}
+    ];
+
+    function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current = 0, correct = 0, incorrect = 0;
+    const quizContainer = document.getElementById("quiz-container");
+    const currentQ = document.getElementById("current-question");
+    const totalQ = document.getElementById("total-questions");
+    const correctCount = document.getElementById("correct-count");
+    const incorrectCount = document.getElementById("incorrect-count");
+    const scorePercent = document.getElementById("score-percent");
+    const progressBar = document.getElementById("progress-bar");
+    const summary = document.getElementById("summary");
+
+    totalQ.textContent = questions.length;
+
+    function showQuestion() {
+      if (current >= questions.length) { showSummary(); return; }
+      const q = questions[current];
+      quizContainer.innerHTML = `<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i) => `<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent = current + 1;
+      progressBar.style.width = ((current)/questions.length*100) + "%";
+      progressBar.textContent = Math.round((current)/questions.length*100) + "%";
+
+      const options = quizContainer.querySelectorAll("input[name=option]");
+      const labels = quizContainer.querySelectorAll("label");
+      const explanation = quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){ labels[i].classList.add("correct"); correct++; }
+          else{ labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++; }
+          explanation.style.display="block"; explanation.textContent = q.explanation;
+          updateScore();
+          setTimeout(()=>{ current++; showQuestion(); }, 3500);
+        });
+      });
+    }
+
+    function updateScore() {
+      correctCount.textContent = correct;
+      incorrectCount.textContent = incorrect;
+      let percent = Math.round((correct/(correct+incorrect))*100) || 0;
+      scorePercent.textContent = percent + "%";
+    }
+
+    function showSummary() {
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent = Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

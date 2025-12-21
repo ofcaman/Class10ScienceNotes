@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 9 Quiz – Thermal Energy, Heat & Temperature</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Which of the following correctly defines thermal energy?", options:["Energy transferred from hot to cold object","Total internal energy of all particles in a substance due to their motion","Measure of degree of hotness or coldness","Heat required to raise temperature of 1 kg substance by 1°C"], answer:1, explanation:"Thermal energy is the total internal energy due to particle motion."},
+      {q:"Heat is measured in which SI unit?", options:["Kelvin (K)","Joule (J)","Celsius (°C)","Watt (W)"], answer:1, explanation:"Heat energy is measured in Joules."},
+      {q:"When heated, which state of matter expands the most?", options:["Solid","Liquid","Gas","Plasma"], answer:2, explanation:"Gases expand more than liquids and solids on heating."},
+      {q:"Water shows anomalous expansion between:", options:["0°C to 4°C","4°C to 100°C","0°C to 100°C","-10°C to 0°C"], answer:0, explanation:"Water contracts from 100°C to 4°C, then expands below 4°C."},
+      {q:"Which formula represents heat energy?", options:["Q = mcΔT","Q = mgh","Q = ½mv²","Q = F × d"], answer:0, explanation:"Heat energy depends on mass, specific heat, and temperature change."},
+      {q:"Which of the following has the highest specific heat capacity?", options:["Iron","Copper","Water","Aluminum"], answer:2, explanation:"Water has high specific heat (4200 J/kg°C)."},
+      {q:"Which device measures temperature using thermal expansion of mercury or alcohol?", options:["Digital thermometer","Radiation thermometer","Liquid thermometer","Thermocouple"], answer:2, explanation:"Liquid thermometers work on thermal expansion principle."},
+      {q:"Heat flows naturally from:", options:["Cold to hot","Hot to cold","Gas to solid","Liquid to gas"], answer:1, explanation:"Heat always flows from a hotter to a cooler object."},
+      // Medium Level
+      {q:"Which of the following examples illustrates thermal expansion?", options:["Ice floating on water","Railway tracks bending in summer","Water’s anomalous expansion","Temperature measured with thermometer"], answer:1, explanation:"Railway tracks expand slightly when heated."},
+      {q:"Which factor does NOT affect heat absorption?", options:["Color of surface","Mass of object","Shape of thermometer","Specific heat of material"], answer:2, explanation:"Thermometer shape doesn’t affect heat absorption."},
+      {q:"What is the heat required to raise 2 kg of water by 10°C? (c = 4200 J/kg°C)", options:["42,000 J","84,000 J","8,400 J","420,000 J"], answer:1, explanation:"Q = mcΔT = 2 × 4200 × 10 = 84,000 J."},
+      {q:"Ice floats on water because:", options:["Water contracts below 4°C","Water expands below 4°C","Water has low specific heat","Water evaporates"], answer:1, explanation:"Expansion of water below 4°C reduces density, allowing ice to float."},
+      {q:"In calorimetry, the principle is:", options:["Heat lost = Heat gained","Temperature always rises","Thermal energy = Temperature","Mass always increases"], answer:0, explanation:"Heat lost by hot object equals heat gained by cold object."},
+      {q:"Which of the following will absorb the most heat?", options:["Large white surface","Small white surface","Large black surface","Small black surface"], answer:2, explanation:"Dark, large surfaces absorb more heat."},
+      {q:"If 1 kg of copper (c = 390 J/kg°C) at 100°C is placed in 2 kg water at 30°C, the final temperature (Tf) is:", options:["30°C","33.1°C","50°C","100°C"], answer:1, explanation:"Using heat lost = heat gained formula, Tf ≈ 33.1°C."},
+      {q:"Which thermometer is suitable for remote temperature measurement?", options:["Digital thermometer","Liquid thermometer","Radiation thermometer","Alcohol thermometer"], answer:2, explanation:"Radiation thermometers detect infrared from a distance."},
+      {q:"Specific heat capacity is defined as:", options:["Heat required to change state of 1 kg substance","Heat required to raise temperature of 1 kg substance by 1°C","Temperature of substance per unit mass","Energy in transit"], answer:1, explanation:"By definition of specific heat capacity."},
+      {q:"Which of the following is a consequence of anomalous expansion of water?", options:["Electric wires sag in summer","Fish survive in frozen lakes","Railway tracks bend","Water boils faster"], answer:1, explanation:"Expansion below 4°C keeps bottom liquid, supporting aquatic life."},
+      {q:"A black-painted object gains heat faster than a white one because:", options:["Black has lower mass","Black absorbs more radiation","Black has higher specific heat","Black contracts when heated"], answer:1, explanation:"Dark surfaces absorb more radiant energy."},
+      {q:"Which is NOT a use of water’s high specific heat?", options:["Car radiators","Climate moderation in coastal areas","Hot water bottles","Measuring temperature"], answer:3, explanation:"High specific heat stabilizes temperature but does not measure it."},
+      // Hard Level
+      {q:"A 2 kg iron block (c = 450 J/kg°C) at 150°C is placed in 3 kg water at 25°C. Approximate final temperature (Tf)?", options:["32°C","50°C","80°C","100°C"], answer:1, explanation:"Use m₁c₁(T₁ − Tf) = m₂c₂(Tf − T₂). Solve Tf ≈ 50°C."},
+      {q:"Which of the following shows correct order of thermal expansion?", options:["Solid > Liquid > Gas","Gas > Liquid > Solid","Liquid > Solid > Gas","Gas = Liquid = Solid"], answer:1, explanation:"Gases expand most, solids least, liquids intermediate."},
+      {q:"If 0.5 kg of water absorbs 1050 J of heat, temperature rise is: (c = 4200 J/kg°C)", options:["0.5°C","0.25°C","5°C","1°C"], answer:0, explanation:"ΔT = Q / (mc) = 1050 / (0.5 × 4200) = 0.5°C."},
+      {q:"Which phenomenon ensures surface freezes first in a lake?", options:["Thermal expansion of solids","Anomalous expansion of water","Heat absorption by dark surfaces","High specific heat of water"], answer:1, explanation:"Expansion below 4°C keeps bottom liquid while surface freezes."},
+      {q:"Which factor is most critical for designing a calorimeter?", options:["Mass of calorimeter negligible compared to substances","Color of calorimeter","Shape of thermometer","Ambient temperature"], answer:0, explanation:"Heat absorbed by calorimeter should be minimal to measure substances accurately."},
+      {q:"A metal block has mass 2 kg, c = 500 J/kg°C. Heat of 50,000 J raises temperature by?", options:["25°C","50°C","100°C","0.5°C"], answer:1, explanation:"ΔT = Q / (mc) = 50000 / (2×500) = 50°C."},
+      {q:"A system loses 800 J and the other gains 800 J. This is an example of:", options:["Thermal equilibrium","Calorimetry principle","Anomalous expansion","Specific heat measurement"], answer:1, explanation:"Heat lost = Heat gained demonstrates calorimetry principle."},
+      {q:"Which of the following explains why coastal areas have moderate climate?", options:["High thermal expansion of water","High specific heat of water","Anomalous expansion of water","Radiation from black surfaces"], answer:1, explanation:"High specific heat of water moderates coastal climate."},
+      {q:"For a thermometer, the upper fixed point corresponds to:", options:["Melting point of ice","Boiling point of water","Maximum thermal energy","Anomalous expansion"], answer:1, explanation:"Upper fixed point = 100°C (boiling water)."},
+      {q:"In calorimetry, if m₁c₁(T₁ − Tf) ≠ m₂c₂(Tf − T₂), it means:", options:["No heat transfer occurred","Some heat lost to surroundings","Thermal equilibrium reached","Substances have same c"], answer:1, explanation:"Heat lost ≠ heat gained indicates system is not perfectly insulated."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 18 Quiz – Hydrocarbons and Alcohols</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"Hydrocarbons are compounds made of:", options:["Carbon and oxygen","Hydrogen and oxygen","Carbon and hydrogen","Carbon, hydrogen, and nitrogen"], answer:2, explanation:"Hydrocarbons are organic compounds composed solely of carbon and hydrogen atoms."},
+      {q:"The simplest hydrocarbon is:", options:["Ethane","Methane","Propane","Butane"], answer:1, explanation:"Methane (CH₄) is the simplest hydrocarbon, consisting of one carbon atom bonded to four hydrogen atoms."},
+      {q:"Alkanes are:", options:["Saturated hydrocarbons","Unsaturated hydrocarbons","Contain double bonds","Contain triple bonds"], answer:0, explanation:"Alkanes are saturated hydrocarbons, meaning they contain only single bonds between carbon atoms."},
+      {q:"Alkenes contain:", options:["Only single bonds","Double bonds","Triple bonds","No bonds"], answer:1, explanation:"Alkenes are unsaturated hydrocarbons with at least one carbon-carbon double bond."},
+      {q:"Alkynes contain:", options:["Single bonds","Double bonds","Triple bonds","Hydrogen bonds"], answer:2, explanation:"Alkynes are unsaturated hydrocarbons containing at least one carbon-carbon triple bond."},
+      {q:"Methanol is:", options:["Alcohol with one –OH group","Alcohol with two –OH groups","Hydrocarbon","Unsaturated hydrocarbon"], answer:0, explanation:"Methanol (CH₃OH) is a monohydric alcohol, containing one hydroxyl (-OH) group."},
+      {q:"Ethanol is used as:", options:["Solvent","Fuel","Alcoholic beverage","All of the above"], answer:3, explanation:"Ethanol (C₂H₅OH) is used in beverages, as a fuel, and as a solvent in industries."},
+      {q:"Functional group of alcohols is:", options:["–COOH","–OH","–NH₂","–CHO"], answer:1, explanation:"Alcohols contain the hydroxyl (-OH) functional group attached to a carbon atom."},
+      // Medium (12)
+      {q:"General formula of alkanes is:", options:["CₙH₂ₙ","CₙH₂ₙ₊₂","CₙH₂ₙ₋₂","CₙHₙ"], answer:1, explanation:"Alkanes follow the formula CₙH₂ₙ₊₂, where n is the number of carbon atoms."},
+      {q:"General formula of alkenes is:", options:["CₙH₂ₙ₊₂","CₙH₂ₙ","CₙH₂ₙ₋₂","CₙHₙ₊₁"], answer:1, explanation:"Alkenes have the formula CₙH₂ₙ, representing unsaturated hydrocarbons with one double bond."},
+      {q:"General formula of alkynes is:", options:["CₙH₂ₙ₊₂","CₙH₂ₙ","CₙH₂ₙ₋₂","CₙHₙ"], answer:2, explanation:"Alkynes have the formula CₙH₂ₙ₋₂, due to the presence of a carbon-carbon triple bond."},
+      {q:"Homologous series members differ by:", options:["One carbon atom","One hydrogen atom","CH₂ unit","OH group"], answer:2, explanation:"Consecutive members of a homologous series differ by a CH₂ unit."},
+      {q:"Propane (C₃H₈) is mainly used in:", options:["Cooking gas","Antifreeze","Solvent","Explosives"], answer:0, explanation:"Propane is commonly used as LPG for cooking and heating."},
+      {q:"Butane (C₄H₁₀) is found in:", options:["Natural gas","LPG","Alcoholic drinks","Hydrogen fuel"], answer:1, explanation:"Butane is a major component of LPG used for fuel in lighters and stoves."},
+      {q:"Dihydric alcohol contains:", options:["One –OH group","Two –OH groups","Three –OH groups","No –OH group"], answer:1, explanation:"Dihydric alcohols, like ethylene glycol, contain two hydroxyl groups."},
+      {q:"Example of dihydric alcohol:", options:["Methanol","Ethylene glycol","Glycerol","Ethanol"], answer:1, explanation:"Ethylene glycol (C₂H₄(OH)₂) is a dihydric alcohol with two –OH groups."},
+      {q:"Trihydric alcohol contains:", options:["One –OH group","Two –OH groups","Three –OH groups","Four –OH groups"], answer:2, explanation:"Trihydric alcohols, like glycerol, contain three hydroxyl groups."},
+      {q:"Example of trihydric alcohol:", options:["Methanol","Glycerol","Ethanol","Propanol"], answer:1, explanation:"Glycerol (C₃H₅(OH)₃) is a trihydric alcohol with three –OH groups."},
+      {q:"Alkyl group is formed by:", options:["Adding hydrogen to alkane","Removing one hydrogen from alkane","Adding OH group to alkane","Adding oxygen to alkane"], answer:1, explanation:"Removing one hydrogen from an alkane forms an alkyl group, which can attach to other atoms or groups."},
+      {q:"Ethanol has carbon atoms:", options:["One","Two","Three","Four"], answer:1, explanation:"Ethanol (C₂H₅OH) has two carbon atoms."},
+      // Hard (10)
+      {q:"Alcohols react with acids to form:", options:["Alkanes","Esters","Alkenes","Alkynes"], answer:1, explanation:"Alcohols react with carboxylic acids to produce esters in esterification reactions."},
+      {q:"Glycerol is highly:", options:["Flammable","Viscous and hygroscopic","Non-soluble","Toxic only"], answer:1, explanation:"Glycerol is thick (viscous) and absorbs water from the air (hygroscopic)."},
+      {q:"Methanol toxicity can cause:", options:["Blindness","Fever","Weight loss","Hair fall"], answer:0, explanation:"Methanol ingestion can lead to metabolic acidosis and permanent blindness."},
+      {q:"Homologous series show:", options:["Similar chemical properties","Gradual change in physical properties","Constant mass difference","All of the above"], answer:3, explanation:"Members of a homologous series share chemical properties, gradually change physically, and differ by a CH₂ unit."},
+      {q:"Short-chain alcohols are:", options:["Insoluble in water","Soluble in water","Non-flammable","Solid at room temperature"], answer:1, explanation:"Small alcohols like methanol and ethanol are soluble in water due to hydrogen bonding."},
+      {q:"Alcohol with formula C₂H₅OH is called:", options:["Methanol","Ethanol","Propanol","Butanol"], answer:1, explanation:"C₂H₅OH is ethanol, a two-carbon alcohol."},
+      {q:"Functional group –CHO is present in:", options:["Alcohol","Aldehyde","Carboxylic acid","Amine"], answer:1, explanation:"Aldehydes contain the –CHO group at the end of a carbon chain."},
+      {q:"Glycerol formula is:", options:["C₃H₈O","C₃H₅(OH)₃","C₂H₅OH","CH₃OH"], answer:1, explanation:"Glycerol (C₃H₅(OH)₃) has three –OH groups attached to three carbon atoms."},
+      {q:"Methanol is mainly used in:", options:["Fuel and industrial chemicals","Alcoholic drinks","Food preservation","Cosmetics"], answer:0, explanation:"Methanol is used as fuel and as a raw material in chemical industries, but it is toxic for consumption."},
+      {q:"The prefix “prop-” denotes:", options:["1 carbon","2 carbons","3 carbons","4 carbons"], answer:2, explanation:"“Prop-” in organic nomenclature indicates three carbon atoms in the main chain."}
+    ];
+
+    function shuffle(array){
+      for(let i=array.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+      }
+    }
+
+    // shuffle options and maintain correct answer index
+    function shuffleOptions(question) {
+      let correctText = question.options[question.answer];
+      shuffle(question.options);
+      question.answer = question.options.indexOf(correctText);
+    }
+
+    questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

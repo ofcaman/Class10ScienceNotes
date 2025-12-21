@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3 Quiz – Honey Bees</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Honey bees belong to which class?", options:["Arachnida","Insecta","Hymenoptera","Apidae"], answer:1, explanation:"Honey bees are insects; Hymenoptera is the order."},
+      {q:"The primary purpose of apiculture is to:", options:["Control pests","Rear honey bees for honey, wax, and pollination","Study bee anatomy","Make fertilizers"], answer:1, explanation:"Apiculture focuses on rearing bees for economic and ecological benefits."},
+      {q:"The social organization of honey bees is called:", options:["Solitary","Eusocial","Parasitic","Semi-social"], answer:1, explanation:"Eusocial behavior is the highest level of social organization in animals."},
+      {q:"The body of a honey bee has how many main parts?", options:["Two","Three","Four","Five"], answer:1, explanation:"Head, thorax, and abdomen."},
+      {q:"Which bee lays eggs in the colony?", options:["Worker","Drone","Queen","Forager"], answer:2, explanation:"The queen is the only reproductive female."},
+      {q:"The stage after egg in honey bee development is:", options:["Pupa","Larva","Adult","Cocoon"], answer:1, explanation:"Eggs hatch into larvae."},
+      {q:"Worker bees have a lifespan of approximately:", options:["2–5 years","Few weeks","5–6 weeks","1 year"], answer:2, explanation:"Worker bees live about 5–6 weeks performing age-based tasks."},
+      {q:"Royal jelly is:", options:["Nectar collected from flowers","A protein-rich secretion fed to larvae","Wax produced by bees","Pollen stored in cells"], answer:1, explanation:"Royal jelly is fed to all larvae initially and exclusively to future queens."},
+      {q:"Honey bees are important for agriculture because they:", options:["Make wax","Pollinate crops","Produce venom","Protect soil"], answer:1, explanation:"Pollination increases productivity of fruits, vegetables, and oilseeds."},
+      {q:"How many wings does a honey bee have?", options:["Two","Four","Six","Eight"], answer:1, explanation:"Honey bees have two pairs of wings attached to the thorax."},
+      // Medium Level
+      {q:"The order of honey bees is:", options:["Lepidoptera","Hymenoptera","Coleoptera","Diptera"], answer:1, explanation:"Honey bees belong to the order Hymenoptera."},
+      {q:"Which caste of honey bees fertilizes the queen?", options:["Worker","Drone","Queen","Forager"], answer:1, explanation:"Drone bees’ primary role is to mate with the queen."},
+      {q:"Worker bees perform different tasks as they age. This phenomenon is called:", options:["Metamorphosis","Polyethism","Eusociality","Caste formation"], answer:1, explanation:"Age-related polyethism refers to changing roles with age."},
+      {q:"How long does the pupal stage last for a drone bee?", options:["7 days","12 days","14 days","21 days"], answer:2, explanation:"Drone pupae develop in about 14 days."},
+      {q:"The queen can lay up to how many eggs per day at peak season?", options:["500","1,000","2,000","5,000"], answer:2, explanation:"Queen bees can lay up to 2,000 eggs daily during peak season."},
+      {q:"Nectar is stored in which part of the bee’s body before being converted to honey?", options:["Stomach","Honey sac","Crop","Thorax"], answer:1, explanation:"The honey sac is a special stomach for nectar transport."},
+      {q:"Which of the following is NOT produced by honey bees?", options:["Honey","Wax","Royal Jelly","Silk"], answer:3, explanation:"Silk is produced by silkworms, not bees."},
+      {q:"Honey bees contribute to about what fraction of world food production through pollination?", options:["One-fourth","One-third","One-half","Two-thirds"], answer:1, explanation:"Approximately one-third of global food relies on bee pollination."},
+      {q:"Which task is performed by worker bees on days 1–3?", options:["Feeding larvae","Cleaning hive cells","Foraging","Building comb"], answer:1, explanation:"Newly emerged workers clean cells in the first 3 days."},
+      {q:"Which caste produces pheromones that regulate colony behavior?", options:["Worker","Drone","Queen","Larva"], answer:2, explanation:"The queen secretes pheromones to maintain social structure."},
+      {q:"What is the function of propolis?", options:["Nutrition for larvae","Antimicrobial substance","Building honeycomb","Storing pollen"], answer:1, explanation:"Propolis is resin-like and has antimicrobial properties."},
+      {q:"How many pairs of legs does a honey bee have?", options:["Two","Three","Four","Six"], answer:1, explanation:"Honey bees have three pairs of legs, totaling six."},
+      // Hard Level
+      {q:"Complete metamorphosis in honey bees consists of:", options:["Egg → Nymph → Adult","Egg → Larva → Pupa → Adult","Egg → Pupa → Adult","Larva → Pupa → Adult"], answer:1, explanation:"Honey bees undergo complete metamorphosis with four distinct stages."},
+      {q:"Which of the following is a primary reason for age-based polyethism in worker bees?", options:["Random assignment","Hormonal changes and colony needs","Queen’s pheromones alone","Environmental temperature"], answer:1, explanation:"Task transition depends on hormones and colony requirements."},
+      {q:"During honey production, moisture is reduced by:", options:["Digestive enzymes","Wing fanning","Sunlight","Temperature change in cells"], answer:1, explanation:"Bees fan their wings to evaporate water from nectar."},
+      {q:"Why do larvae destined to become queens receive royal jelly throughout larval stage?", options:["To increase body size","To develop reproductive organs","To learn tasks","To survive longer only"], answer:1, explanation:"Continuous feeding of royal jelly triggers queen development."},
+      {q:"A single bee produces approximately how much honey in its lifetime?", options:["1 teaspoon","1/12 teaspoon","1/2 teaspoon","1/4 teaspoon"], answer:1, explanation:"Each bee produces only a tiny amount individually."},
+      {q:"Which caste performs foraging for nectar and pollen?", options:["Queen","Worker","Drone","Larva"], answer:1, explanation:"Older worker bees (19+ days) forage outside the hive."},
+      {q:"How long does it take for a worker bee to develop from egg to adult?", options:["10 days","21 days","14 days","28 days"], answer:1, explanation:"Worker development: Egg (3 days) → Larva → Pupa (~12 days) → Adult."},
+      {q:"Fossil evidence suggests honey bees have existed for approximately:", options:["3 million years","30 million years","300 million years","1 million years"], answer:1, explanation:"Honey bees have a long evolutionary history of over 30 million years."}
+    ];
+
+    function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current = 0, correct = 0, incorrect = 0;
+    const quizContainer = document.getElementById("quiz-container");
+    const currentQ = document.getElementById("current-question");
+    const totalQ = document.getElementById("total-questions");
+    const correctCount = document.getElementById("correct-count");
+    const incorrectCount = document.getElementById("incorrect-count");
+    const scorePercent = document.getElementById("score-percent");
+    const progressBar = document.getElementById("progress-bar");
+    const summary = document.getElementById("summary");
+
+    totalQ.textContent = questions.length;
+
+    function showQuestion() {
+      if (current >= questions.length) { showSummary(); return; }
+      const q = questions[current];
+      quizContainer.innerHTML = `<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i) => `<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent = current + 1;
+      progressBar.style.width = ((current)/questions.length*100) + "%";
+      progressBar.textContent = Math.round((current)/questions.length*100) + "%";
+
+      const options = quizContainer.querySelectorAll("input[name=option]");
+      const labels = quizContainer.querySelectorAll("label");
+      const explanation = quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){ labels[i].classList.add("correct"); correct++; }
+          else{ labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++; }
+          explanation.style.display="block"; explanation.textContent = q.explanation;
+          updateScore();
+          setTimeout(()=>{ current++; showQuestion(); }, 3500);
+        });
+      });
+    }
+
+    function updateScore() {
+      correctCount.textContent = correct;
+      incorrectCount.textContent = incorrect;
+      let percent = Math.round((correct/(correct+incorrect))*100) || 0;
+      scorePercent.textContent = percent + "%";
+    }
+
+    function showSummary() {
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent = Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

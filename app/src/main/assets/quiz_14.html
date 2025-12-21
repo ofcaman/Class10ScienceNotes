@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter – Periodic Table Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"Elements are:", options:["Mixtures of atoms","Pure substances consisting of only one type of atom","Compounds","Solutions"], answer:1, explanation:"Elements are pure substances made up of only one type of atom and cannot be broken down chemically."},
+      {q:"Mendeleev arranged elements based on:", options:["Atomic number","Atomic mass","Number of neutrons","Electron affinity"], answer:1, explanation:"Mendeleev arranged elements in order of increasing atomic mass, which helped identify periodic patterns."},
+      {q:"The modern periodic table was introduced by:", options:["Dmitri Mendeleev","Henry Moseley","John Dalton","Antoine Lavoisier"], answer:1, explanation:"Henry Moseley introduced the modern periodic table, arranging elements by increasing atomic number."},
+      {q:"How many periods are there in the modern periodic table?", options:["5","6","7","8"], answer:2, explanation:"The modern periodic table has 7 horizontal rows called periods."},
+      {q:"Which group contains noble gases?", options:["Group 1","Group 11","Group 18","Group 17"], answer:2, explanation:"Noble gases are located in Group 18 and are chemically inert."},
+      {q:"Atomic number represents:", options:["Number of neutrons","Number of protons","Mass of atom","Number of isotopes"], answer:1, explanation:"The atomic number is the number of protons in an atom’s nucleus."},
+      {q:"The 1st period contains how many elements?", options:["1","2","3","4"], answer:1, explanation:"The first period contains only 2 elements: Hydrogen and Helium."},
+      {q:"Which of the following is a property of non-metals?", options:["Lose electrons easily","Gain electrons easily","Highly metallic","Conduct electricity well"], answer:1, explanation:"Non-metals tend to gain electrons in chemical reactions and are poor conductors of electricity."},
+
+      // Medium (12)
+      {q:"Mendeleev left gaps in his table to:", options:["Reduce table size","Predict properties of undiscovered elements","Group metals together","Place isotopes"], answer:1, explanation:"Gaps were left for elements not yet discovered, allowing Mendeleev to predict their properties."},
+      {q:"Which of the following is a demerit of Mendeleev’s table?", options:["Hydrogen did not fit well in any group","Correctly predicted unknown elements","Grouped elements by similar properties","Allowed systematic study"], answer:0, explanation:"Hydrogen’s properties did not match well with any group in Mendeleev’s table."},
+      {q:"In the modern periodic table, elements are arranged according to:", options:["Atomic mass","Atomic number","Valency only","Electron affinity"], answer:1, explanation:"Elements are arranged in order of increasing atomic number, which reflects their periodic properties."},
+      {q:"Which sub-shell can hold a maximum of 14 electrons?", options:["s","p","d","f"], answer:3, explanation:"The f-sub-shell can accommodate 14 electrons."},
+      {q:"Group number in representative elements indicates:", options:["Number of shells","Number of valence electrons","Atomic mass","Metallic character"], answer:1, explanation:"In representative elements, the group number equals the number of valence electrons."},
+      {q:"Across a period, atomic size:", options:["Increases","Decreases","Remains constant","First increases, then decreases"], answer:1, explanation:"Atomic size decreases across a period due to increasing nuclear charge pulling electrons closer."},
+      {q:"Down a group, electronegativity:", options:["Increases","Decreases","Remains constant","First decreases, then increases"], answer:1, explanation:"Electronegativity decreases down a group as atomic size increases, reducing nuclear attraction on bonding electrons."},
+      {q:"Which block contains transition metals?", options:["s-block","p-block","d-block","f-block"], answer:2, explanation:"Transition metals are located in the d-block of the periodic table."},
+      {q:"Alkali metals are placed in:", options:["Group 1","Group 2","Group 17","Group 18"], answer:0, explanation:"Alkali metals, like sodium and potassium, belong to Group 1."},
+      {q:"Metals are more reactive:", options:["Up the group","Down the group","Across a period","In noble gases"], answer:1, explanation:"Reactivity of metals increases down a group as outer electrons are farther from the nucleus."},
+      {q:"Non-metals are more reactive:", options:["Down the group","Up the group","Across a period","In transition metals"], answer:1, explanation:"Non-metal reactivity increases up a group as atoms more strongly attract electrons."},
+      {q:"The modern periodic law states:", options:["Properties of elements are a periodic function of atomic mass","Properties of elements are a periodic function of atomic number","Properties of elements are random","Only metals show periodicity"], answer:1, explanation:"The modern periodic law states that element properties repeat periodically with increasing atomic number."},
+
+      // Hard (10)
+      {q:"The first electron shell can hold a maximum of:", options:["2 electrons","8 electrons","10 electrons","14 electrons"], answer:0, explanation:"The first shell (K-shell) can hold only 2 electrons."},
+      {q:"Which of the following correctly represents s-block elements?", options:["Groups 1 and 2","Groups 13 to 18","Groups 3 to 12","Lanthanides"], answer:0, explanation:"S-block elements include alkali and alkaline earth metals in Groups 1 and 2."},
+      {q:"Which of the following correctly represents p-block elements?", options:["Groups 1 and 2","Groups 3 to 12","Groups 13 to 18","Lanthanides"], answer:2, explanation:"P-block elements include Groups 13 to 18, containing metals, metalloids, and non-metals."},
+      {q:"Which of the following represents inner transition metals?", options:["s-block","p-block","d-block","f-block"], answer:3, explanation:"Inner transition metals include lanthanides and actinides, found in the f-block."},
+      {q:"Metallic character across a period:", options:["Increases","Decreases","Remains constant","First decreases, then increases"], answer:1, explanation:"Metallic character decreases across a period as elements gain non-metallic properties."},
+      {q:"Ionization energy down a group:", options:["Increases","Decreases","Remains constant","Varies randomly"], answer:1, explanation:"Ionization energy decreases down a group because outer electrons are farther from the nucleus."},
+      {q:"The position of hydrogen in the modern periodic table:", options:["Only in Group 1","Only in Group 17","Can be in Group 1 or 17 depending on context","In Group 18"], answer:2, explanation:"Hydrogen can behave like an alkali metal or a halogen, so its position depends on context."},
+      {q:"Which of the following explains why isotopes occupy the same position in the modern table?", options:["Same atomic mass","Same atomic number","Same number of neutrons","Same valency"], answer:1, explanation:"Isotopes of an element have the same atomic number and chemical properties, so they occupy the same group."},
+      {q:"Which of the following is true about periods?", options:["Vertical columns","Horizontal rows","Groups with same valence electrons","Only metals"], answer:1, explanation:"Periods are horizontal rows in the periodic table, showing recurring properties across elements."},
+      {q:"Electrons fill orbitals in order of increasing energy according to:", options:["Hund’s Rule","Pauli Exclusion Principle","Aufbau Principle","Modern Periodic Law"], answer:2, explanation:"The Aufbau Principle states that electrons occupy lower-energy orbitals first before filling higher-energy ones."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Class 10 Science Guide</string>
+    <string name="mero_notes">Tayari365</string>
+    <string name="app_icons">App Icons</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lectures_title">Lectures</string>
+    <string name="copyright_text">© Tayari365</string>
+    <string name="video_icon_description">Video icon</string>
+    <string name="back">back</string>
+    <string name="ten_set_book">Ten Set Book</string>
+    <string name="biology_notes">Biology Notes</string>
+    <string name="default_title">Default Title</string>
+    <string name="chemistry_notes">Chemistry Notes</string>
+    <string name="imp_questions">Imp Questions</string>
+    <string name="notes">Notes</string>
+    <string name="note_viewer">Note Viewer</string>
+    <string name="physics_notes">Physics Notes</string>
+    <string name="pyps">PYPs</string>
+    <string name="model_questions">Model Questions</string>
+    <string name="show_all">Show All</string>
+    <string name="class_10_science_notes">CLASS 10 SCIENCE NOTES</string>
+    <string name="science_other_contents">SCIENCE OTHER CONTENTS</string>
+    <string name="totalvideoicon">totalvideoicon</string>
+    <string name="p">P</string>
+    <string name="physics_lectures">Physics Lectures</string>
+    <string name="_8">8</string>
+    <string name="c">C</string>
+    <string name="biology_lectures">Biology Lectures</string>
+    <string name="chemistry_lectures">Chemistry Lectures</string>
+    <string name="_5">5</string>
+    <string name="mero_notes_ofc">© Tayari365</string>
+    <string name="_6">6</string>
+    <string name="b">B</string>
+    <string name="lectures">Lectures</string>
+    <string name="important_mcqs">Important MCQs</string>
+    <string name="chapter_1">Chapter 1</string>
+    <string name="chapter_icon">Chapter icon</string>
+    <string name="slider_img">slider img</string>
+    <string name="mock_test">Mock Test</string>
+    <string name="mind_maps">Mind Maps</string>
+    <string name="type_a_message">Type a message</string>
+    <string name="send">Send</string>
+    <string name="chat_with_nova">Chat with Nova</string>
+    <string name="type_a_question">Type a question</string>
+    <string name="aakaar_ai_assistant">Gyani Dai Ai Assistant</string>
+    <string name="answer_your_class_10_science_questions">Answer your class 10 science questions</string>
+    <string name="type_to_start_questioning">Type to start questioning...</string>
+    <string name="msg_send">msg send</string>
+    <string name="about_us">About Us</string>
+    <string name="app_icon">App Icon</string>
+    <string name="app_banner">App Banner</string>
+    <string name="version_format">Version %s</string>
+    <string name="app_description">Gyani Dai AI is your friendly AI assistant designed to help with science-related topics. Ask questions, explore concepts, and learn about the fascinating world of science! Our advanced AI technology provides accurate and engaging responses to help you understand complex scientific ideas.</string>
+    <string name="developed_by">Developed by</string>
+    <string name="developer_names">Aman Gautam (Developer)\nAadesh Silwal (Designer)\nLucifer Memo (Content Creator/Solution Maker)</string>
+    <string name="mic">mic</string>
+    <string name="ailogo">ailogo</string>
+</resources>
+
+

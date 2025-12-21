@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 19 – Chemicals in Daily Life Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f0f0f0; }
+        .quiz-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        .question { font-weight: bold; margin-bottom: 10px; }
+        .options label { display: block; margin: 8px 0; padding: 8px; border-radius: 5px; cursor: pointer; }
+        .options input { margin-right: 10px; }
+        .correct { background-color: #c8e6c9; }
+        .wrong { background-color: #ffcdd2; }
+        .explanation { margin-top: 10px; font-style: italic; }
+        .progress-bar { height: 20px; background: #ddd; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+        .progress { height: 100%; background: #4caf50; width: 0%; text-align: center; color: white; }
+        .scoreboard { margin-top: 15px; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <div class="progress-bar">
+        <div class="progress" id="progress">0%</div>
+    </div>
+    <div id="quiz"></div>
+    <div class="scoreboard">
+        <p>Total Correct: <span id="correct">0</span></p>
+        <p>Total Incorrect: <span id="incorrect">0</span></p>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        // Easy
+        {q:"Food preservatives are added to food to:", options:["Change color","Prevent spoilage and extend shelf life","Increase weight","Reduce taste"], answer:1, explanation:"Preservatives prevent food from spoiling by inhibiting the growth of bacteria, fungi, and other microorganisms, thus extending shelf life."},
+        {q:"Natural food preservatives include:", options:["Sodium benzoate","Salt and sugar","Potassium metabisulfite","Calcium carbide"], answer:1, explanation:"Salt and sugar act as natural preservatives by drawing out moisture and creating an environment unsuitable for microbial growth."},
+        {q:"Synthetic food preservatives are also called:", options:["First-class preservatives","Second-class preservatives","Natural preservatives","Organic preservatives"], answer:1, explanation:"Synthetic preservatives are man-made chemicals and are referred to as second-class preservatives."},
+        {q:"Lemon juice acts as a natural:", options:["Soap","Pesticide","Bleach and antibacterial agent","Fertilizer"], answer:2, explanation:"Lemon juice has acidic properties that act as a bleach and can kill certain bacteria, making it a natural antibacterial agent."},
+        {q:"Soap is made by heating fats with:", options:["Sodium chloride","Sodium hydroxide","Potassium permanganate","Calcium carbonate"], answer:1, explanation:"Soap is produced by saponification, which involves heating fats with sodium hydroxide to produce soap and glycerol."},
+        {q:"Detergents work well in:", options:["Soft water only","Hard water","Alcohol","Oil"], answer:1, explanation:"Detergents are designed to work effectively even in hard water, unlike soap which forms scum with minerals in hard water."},
+        {q:"Calcium carbide is used for:", options:["Cleaning utensils","Artificial ripening of fruits","Fertilizers","Pesticides"], answer:1, explanation:"Calcium carbide reacts with moisture to produce acetylene gas, which is used to artificially ripen fruits."},
+        {q:"Pyrethrin is an example of a:", options:["Persistent pesticide","Non-persistent pesticide","Herbicide","Rodenticide"], answer:1, explanation:"Pyrethrin is a natural pesticide that breaks down quickly in the environment, making it non-persistent."},
+        // Medium
+        {q:"Non-biodegradable pesticides:", options:["Break down quickly","Persist in the environment","Kill only insects","Are safe for humans"], answer:1, explanation:"Non-biodegradable pesticides remain in the environment for a long time and can accumulate, causing pollution."},
+        {q:"Herbicides are used to:", options:["Kill insects","Kill fungi","Kill weeds","Kill rodents"], answer:2, explanation:"Herbicides are chemicals specifically designed to control or kill unwanted plants (weeds)."},
+        {q:"Fungicides are used to:", options:["Kill rodents","Kill fungi","Kill insects","Kill weeds"], answer:1, explanation:"Fungicides prevent or eliminate fungal infections in crops and stored products."},
+        {q:"Contact pesticides:", options:["Are absorbed by plants","Kill pests on contact","Circulate through plant tissues","Are inhaled by pests"], answer:1, explanation:"Contact pesticides kill pests when they come into direct contact with the chemical."},
+        {q:"Fumigants are pesticides that:", options:["Kill pests on contact","Circulate in plant tissues","Are inhaled by pests","Kill only insects"], answer:2, explanation:"Fumigants are gases that pests inhale, which kills them even in hidden areas."},
+        {q:"Excessive use of chemical fertilizers and pesticides leads to:", options:["Soil improvement","Chemical pollution","Eco-friendly farming","Better taste of food"], answer:1, explanation:"Overusing chemicals contaminates soil, water, and the environment, leading to pollution."},
+        {q:"To minimize chemical pollution, one should:", options:["Use biodegradable pesticides","Dump industrial waste into rivers","Overuse chemical fertilizers","Burn plastics"], answer:0, explanation:"Biodegradable pesticides break down naturally and reduce environmental pollution."},
+        {q:"Storing pesticides near food can cause:", options:["Longer shelf life","Accidental poisoning","Faster plant growth","None of the above"], answer:1, explanation:"Pesticides are toxic; storing them near food can lead to accidental ingestion and poisoning."},
+        {q:"Natural cleansing agent “Ritha” contains:", options:["Citric acid","Saponins","Sodium hydroxide","Sulfur dioxide"], answer:1, explanation:"Ritha (soapnut) contains saponins, natural compounds that act as mild detergents."},
+        {q:"Mustard cake (Pina) is used for:", options:["Cooking oil","Mild abrasive cleaning","Fertilizer only","Insecticide"], answer:1, explanation:"Mustard cake is a natural abrasive and can also enrich the soil when used in gardening."},
+        {q:"Kharani (ash) is mainly used for:", options:["Removing grease and cleaning metal utensils","Dyeing clothes","Making alcohol","Fertilizer only"], answer:0, explanation:"Ash contains alkaline compounds that help remove grease and clean metal utensils."},
+        {q:"Sajiban plant is used as:", options:["Soap","Multipurpose cleansing agent","Pesticide only","Fertilizer only"], answer:1, explanation:"Sajiban has saponins and can be used as a natural multipurpose cleanser."},
+        // Hard
+        {q:"Overuse of chemical preservatives can cause:", options:["Allergic reactions","Hormonal imbalance","Liver and kidney damage","All of the above"], answer:3, explanation:"Excess preservatives can affect human health in multiple ways, including allergies, hormonal disruption, and organ damage."},
+        {q:"Sulphur dioxide as a preservative belongs to:", options:["First-class preservatives","Second-class preservatives","Natural preservatives","Alcohols"], answer:1, explanation:"Sulphur dioxide is a synthetic (second-class) preservative commonly used in dried fruits and wines."},
+        {q:"Industrial chemical safety includes:", options:["Proper labeling","Regular inspection of storage tanks","Use of protective gear","All of the above"], answer:3, explanation:"Safe handling of chemicals requires labeling, inspections, and protective equipment to prevent accidents."},
+        {q:"Acidic natural preservatives include:", options:["Salt","Sugar","Lemon juice and vinegar","Calcium carbide"], answer:2, explanation:"Acidic natural substances like lemon juice and vinegar inhibit microbial growth and preserve food."},
+        {q:"Non-persistent pesticides are:", options:["Biodegradable","Non-biodegradable","Artificial ripening agents","Industrial chemicals"], answer:0, explanation:"Non-persistent pesticides degrade quickly in the environment and are considered biodegradable."},
+        {q:"Proper management of chemicals requires:", options:["Ignoring safety rules","Following government regulations","Overusing chemicals","Leaving chemicals in open air"], answer:1, explanation:"Compliance with regulations ensures safe storage, handling, and disposal of chemicals."},
+        {q:"Which pesticide is absorbed and circulates through the plant?", options:["Contact pesticide","Fumigant","Systemic pesticide","Rodenticide"], answer:2, explanation:"Systemic pesticides are absorbed by plants and transported through tissues to protect the entire plant."},
+        {q:"Overuse of chemical preservatives may lead to:", options:["Microbial growth","Carcinogenic effects","Better taste","None of the above"], answer:1, explanation:"Excessive chemical preservatives may contribute to cancer risk in humans over long-term exposure."},
+        {q:"Detergents are:", options:["Natural cleansing agents","Synthetic cleansing agents","Pesticides","Preservatives"], answer:1, explanation:"Detergents are man-made synthetic compounds designed for cleaning purposes."},
+        {q:"Food preservatives that are man-made belong to:", options:["First-class preservatives","Second-class preservatives","Natural preservatives","Induced ripening agents"], answer:1, explanation:"Artificial preservatives created in labs are classified as second-class preservatives."}
+    ];
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store actual correct text
+  shuffle(question.options); // shuffle the array
+  question.answer = question.options.indexOf(correctAnswerText); // update correct index
+}
+
+
+    let current = 0, correctCount = 0, incorrectCount = 0;
+
+    function shuffleArray(arr) { return arr.sort(() => Math.random() - 0.5); }
+
+    function showQuestion() {
+        if(current >= questions.length){
+            document.getElementById('quiz').innerHTML = `<h2>Quiz Completed!</h2>
+            <p>Your Score: ${correctCount}/${questions.length}</p>`;
+            return;
+        }
+
+        let q = questions[current];
+        let options = shuffleArray([...q.options]);
+        let quizDiv = document.getElementById('quiz');
+        let html = `<div class="question">${current+1}. ${q.q}</div><div class="options">`;
+        options.forEach((opt, i)=>{
+            html += `<label><input type="radio" name="option" value="${i}">${opt}</label>`;
+        });
+        html += `</div><div class="explanation" id="explanation"></div>`;
+        quizDiv.innerHTML = html;
+
+        document.querySelectorAll('input[name="option"]').forEach(input=>{
+            input.addEventListener('change', ()=>{
+                let selectedText = options[input.value];
+                let correctText = q.options[q.answer];
+                if(selectedText === correctText){
+                    input.parentElement.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.parentElement.classList.add('wrong');
+                    correctCount = correctCount; // keep correct
+                    incorrectCount++;
+                    document.querySelectorAll('label').forEach(label=>{
+                        if(label.textContent === correctText) label.classList.add('correct');
+                    });
+                }
+                document.getElementById('explanation').innerText = q.explanation;
+                document.getElementById('correct').innerText = correctCount;
+                document.getElementById('incorrect').innerText = incorrectCount;
+
+                // Auto next question
+                setTimeout(()=>{current++; updateProgress(); showQuestion();}, 3500);
+            });
+        });
+    }
+
+    function updateProgress(){
+        let percent = Math.round((current/questions.length)*100);
+        document.getElementById('progress').style.width = percent + "%";
+        document.getElementById('progress').innerText = percent + "%";
+    }
+
+    showQuestion();
+    updateProgress();
+</script>
+</body>
+</html>

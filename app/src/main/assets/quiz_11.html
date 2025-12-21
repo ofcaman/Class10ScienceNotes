@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 9 Quiz – Electricity & Magnetism</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"Which of the following involves unidirectional flow of electric charges?", options:["AC","DC","Both AC and DC","Neither"], answer:1, explanation:"Direct current (DC) flows in a single direction."},
+      {q:"A solenoid carrying current behaves like:", options:["A resistor","A bar magnet","A capacitor","A diode"], answer:1, explanation:"A current-carrying solenoid generates a magnetic field similar to a bar magnet."},
+      {q:"Which device converts AC into DC?", options:["Transformer","Rectifier","Motor","Dynamo"], answer:1, explanation:"Rectifiers (bridge rectifier) convert alternating current to pulsating DC."},
+      {q:"Which of the following is a source of AC?", options:["Battery","Solar cell","Power plant","Dry cell"], answer:2, explanation:"AC is generated in power plants and delivered to homes."},
+      {q:"Maxwell’s Right-Hand Thumb Rule helps determine:", options:["Direction of current","Direction of magnetic field around a conductor","Polarity of batteries","Induced EMF"], answer:1, explanation:"Thumb along current; fingers show magnetic field direction."},
+      {q:"Force on a current-carrying conductor in a magnetic field depends on:", options:["Magnetic field, current, length, angle","Only current","Only length","Only magnetic field"], answer:0, explanation:"F = B × I × L × sinθ includes all these factors."},
+      {q:"Step-up transformer:", options:["Decreases voltage","Increases voltage","Works with DC","Converts mechanical energy"], answer:1, explanation:"Step-up transformer increases voltage for long-distance transmission."},
+      {q:"Alternating current frequency in Nepal is:", options:["0 Hz","50 Hz","60 Hz","100 Hz"], answer:1, explanation:"Standard AC frequency in Nepal and India is 50 Hz."},
+      // Medium (12)
+      {q:"A straight wire carries current. Magnetic field is:", options:["Along the wire","Concentric circles around wire","Zero outside wire","Only at ends"], answer:1, explanation:"Current generates circular magnetic field around wire."},
+      {q:"Magnetic flux Φ through an area A in a magnetic field B is:", options:["Φ = B × A × sinθ","Φ = B × A × cosθ","Φ = B / A","Φ = I × B × L"], answer:1, explanation:"Φ = B × A × cosθ, θ = angle between field and normal to surface."},
+      {q:"Fleming’s Left-Hand Rule is used to find:", options:["Induced EMF","Direction of force on conductor","Magnetic field direction","Electric current in battery"], answer:1, explanation:"Thumb = force, forefinger = field, middle = current."},
+      {q:"Which of these is not a power source?", options:["Hydropower","Thermal power","Wind turbine","Rectifier"], answer:3, explanation:"Rectifier converts AC to DC, not a power source."},
+      {q:"In electromagnetic induction, induced current direction:", options:["Follows applied current","Opposes flux change (Lenz’s Law)","Always clockwise","Random"], answer:1, explanation:"Lenz’s Law states induced current opposes the change causing it."},
+      {q:"AC generator uses:", options:["Rotating coil + commutator","Rotating coil + slip rings","Static coil + battery","Only DC source"], answer:1, explanation:"AC generators use slip rings to allow alternating current output."},
+      {q:"Increasing number of turns N in solenoid:", options:["Decreases field strength","Increases field strength","Has no effect","Reverses field"], answer:1, explanation:"Magnetic field ∝ number of turns × current."},
+      {q:"Which plant generates electricity using steam from burning fuel?", options:["Hydropower","Thermal power","Wind turbine","Solar panel"], answer:1, explanation:"Thermal power plants burn fuel to produce steam driving turbines."},
+      {q:"In a transformer, Vs/Vp = ?", options:["Ns / Np","Np / Ns","B / I","I / V"], answer:0, explanation:"Voltage ratio equals turns ratio of secondary to primary coil."},
+      {q:"Bridge rectifier output is:", options:["AC","Pulsating DC","Constant AC","Zero"], answer:1, explanation:"Rectifier converts AC into pulsating DC."},
+      {q:"Which device rotates due to motor effect?", options:["Dynamo","DC motor","Rectifier","Transformer"], answer:1, explanation:"Motor effect (force on current-carrying coil) produces rotation in DC motors."},
+      {q:"Magnetic field strength in a solenoid increases with:", options:["Increasing core permeability","Increasing current","Increasing number of turns","All of the above"], answer:3, explanation:"All these factors enhance solenoid’s magnetic field."},
+      // Hard (10)
+      {q:"A transformer has Np = 100 turns, Ns = 1000 turns, Vp = 230 V. Vs = ?", options:["230 V","1150 V","2300 V","2000 V"], answer:2, explanation:"Vs = Vp × (Ns/Np) = 230 × (1000/100) = 2300 V."},
+      {q:"Force on a conductor of length 0.5 m carrying 2 A in 0.3 T field at 30°?", options:["0.15 N","0.26 N","0.3 N","0.5 N"], answer:0, explanation:"F = BIL sinθ = 0.3 × 2 × 0.5 × sin30° = 0.3 × 2 × 0.5 × 0.5 = 0.15 N."},
+      {q:"DC motor keeps rotating because:", options:["Current is AC","Commutator reverses current in coil","Field is absent","Voltage keeps increasing"], answer:1, explanation:"Commutator reverses coil current, maintaining rotation."},
+      {q:"Which phenomenon allows optical telecommunication in fibers?", options:["Refraction","TIR","Dispersion","Induction"], answer:1, explanation:"Total internal reflection traps light in core of optical fiber."},
+      {q:"Lenz’s Law predicts:", options:["Magnitude of induced current only","Direction of induced current opposing flux change","Speed of AC generator","Transformer voltage"], answer:1, explanation:"Lenz’s Law ensures conservation of energy."},
+      {q:"AC vs DC in long-distance transmission:", options:["DC reduces loss","AC reduces loss","AC cannot be transformed","Both same"], answer:1, explanation:"AC allows step-up transformer, reducing current and transmission loss."},
+      {q:"Faraday’s Law states:", options:["EMF ∝ change of flux","EMF ∝ current","EMF ∝ voltage","EMF = constant"], answer:0, explanation:"Induced EMF ∝ rate of change of magnetic flux."},
+      {q:"A solenoid with iron core produces stronger field because:", options:["Iron reduces current","Iron increases permeability","Iron decreases length","Iron changes direction"], answer:1, explanation:"Higher permeability allows more magnetic field lines."},
+      {q:"AC generator differs from DC generator because:", options:["Uses commutator","Uses slip rings","Produces pulsating DC","Produces constant DC"], answer:1, explanation:"Slip rings allow continuous AC; DC generator uses commutator."},
+      {q:"Which rule predicts direction of magnetic field around straight current-carrying conductor?", options:["Fleming’s Left-hand Rule","Right-hand Thumb Rule","Lenz’s Law","Faraday’s Law"], answer:1, explanation:"Right-hand thumb along current; fingers show magnetic field direction."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

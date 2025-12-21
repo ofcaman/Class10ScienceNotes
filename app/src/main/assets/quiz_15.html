@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 15 Quiz – Chemical Reactions</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<h1>Chapter 15 Quiz – Chemical Reactions</h1>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"A chemical reaction involves:", options:["Only physical changes","Transformation of reactants into products with different chemical properties","Change in color only","Change in state only"], answer:1, explanation:"A chemical reaction transforms reactants into products with new chemical properties."},
+      {q:"Reactants are:", options:["Substances formed after a reaction","Substances that undergo change","Catalysts","End products"], answer:1, explanation:"Reactants are substances that participate and undergo change during a reaction."},
+      {q:"Products are:", options:["Substances formed after a reaction","Substances that undergo change","Catalysts","Reactants"], answer:0, explanation:"Products are the substances formed as a result of a chemical reaction."},
+      {q:"A word equation uses:", options:["Symbols and formulas","Names of reactants and products","Only reactants","Only products"], answer:1, explanation:"Word equations represent chemical reactions using names of substances instead of symbols or formulas."},
+      {q:"Which of the following is a combination reaction?", options:["2H₂O → 2H₂ + O₂","N₂ + 3H₂ → 2NH₃","Zn + 2HCl → ZnCl₂ + H₂","NaCl + AgNO₃ → NaNO₃ + AgCl"], answer:1, explanation:"A combination reaction occurs when two or more reactants combine to form a single product."},
+      {q:"Which reaction releases heat?", options:["Endothermic","Exothermic","Neutralization","Decomposition"], answer:1, explanation:"Exothermic reactions release heat to the surroundings."},
+      {q:"A catalyst:", options:["Gets consumed in the reaction","Slows down the reaction","Speeds up a reaction without being consumed","Changes the products"], answer:2, explanation:"A catalyst increases the reaction rate without being used up in the process."},
+      {q:"Rusting of iron is an example of:", options:["Combination reaction","Oxidation reaction","Decomposition reaction","Neutralization"], answer:1, explanation:"Rusting is a slow oxidation reaction of iron with oxygen and moisture."},
+      // Medium (12)
+      {q:"The general form of a single displacement reaction is:", options:["A + B → AB","AB → A + B","A + BC → AC + B","AB + CD → AD + CB"], answer:2, explanation:"In single displacement, one element replaces another in a compound."},
+      {q:"The general form of a double displacement reaction is:", options:["A + B → AB","AB → A + B","A + BC → AC + B","AB + CD → AD + CB"], answer:3, explanation:"In double displacement, the components of two compounds swap places."},
+      {q:"Which of the following is a decomposition reaction?", options:["2KClO₃ → 2KCl + 3O₂","C + O₂ → CO₂","HCl + NaOH → NaCl + H₂O","Zn + HCl → ZnCl₂ + H₂"], answer:0, explanation:"Decomposition reactions break down a single compound into simpler substances."},
+      {q:"Balanced chemical equation for water formation:", options:["H₂ + O₂ → H₂O","2H₂ + O₂ → 2H₂O","H₂ + 2O₂ → H₂O","2H₂ + 2O₂ → 2H₂O"], answer:1, explanation:"Two molecules of hydrogen react with one molecule of oxygen to form two molecules of water."},
+      {q:"Which factor increases reaction rate by increasing particle collisions?", options:["Lower temperature","Lower concentration","Higher surface area","Less pressure"], answer:2, explanation:"Higher surface area exposes more particles to collisions, increasing reaction rate."},
+      {q:"Light can initiate which type of reaction?", options:["Neutralization","Photochemical","Combination","Decomposition"], answer:1, explanation:"Photochemical reactions are initiated by light energy."},
+      {q:"Endothermic reactions:", options:["Release heat","Absorb heat","Produce light","Produce gas only"], answer:1, explanation:"Endothermic reactions absorb energy from the surroundings."},
+      {q:"Which of the following is an acid-base reaction?", options:["2H₂ + O₂ → 2H₂O","HCl + NaOH → NaCl + H₂O","Zn + HCl → ZnCl₂ + H₂","CaCO₃ → CaO + CO₂"], answer:1, explanation:"Acid-base reactions involve an acid reacting with a base to form salt and water."},
+      {q:"Instant cold packs involve:", options:["Exothermic reaction","Endothermic reaction","Neutralization","Oxidation"], answer:1, explanation:"Instant cold packs absorb heat during the chemical reaction, making them endothermic."},
+      {q:"Elephant toothpaste experiment is an example of:", options:["Combination reaction","Decomposition reaction","Displacement reaction","Acid-base reaction"], answer:1, explanation:"Elephant toothpaste decomposes hydrogen peroxide into water and oxygen."},
+      {q:"Candle flame color varies due to:", options:["Temperature and incomplete combustion","Type of wax only","Oxygen only","Flame size only"], answer:0, explanation:"Flame color depends on temperature and completeness of combustion."},
+      {q:"Fe + CuSO₄ → FeSO₄ + Cu is an example of:", options:["Single displacement","Double displacement","Decomposition","Combination"], answer:0, explanation:"Iron displaces copper from copper sulfate, a single displacement reaction."},
+      // Hard (10)
+      {q:"General form of a combination reaction is:", options:["AB → A + B","A + B → AB","A + BC → AC + B","AB + CD → AD + CB"], answer:1, explanation:"Combination reactions occur when two or more substances form a single product."},
+      {q:"General form of a decomposition reaction is:", options:["A + B → AB","AB → A + B","A + BC → AC + B","AB + CD → AD + CB"], answer:1, explanation:"Decomposition reactions split a compound into two or more simpler substances."},
+      {q:"Which of the following affects reaction rate without being consumed?", options:["Reactant","Product","Catalyst","Temperature"], answer:2, explanation:"A catalyst speeds up a reaction without being consumed."},
+      {q:"Higher concentration of reactants:", options:["Slows down the reaction","Has no effect","Speeds up the reaction","Stops the reaction"], answer:2, explanation:"Higher concentration increases particle collisions, speeding up the reaction."},
+      {q:"2H₂O → 2H₂ + O₂ is:", options:["Combination","Decomposition","Single displacement","Double displacement"], answer:1, explanation:"Water decomposes into hydrogen and oxygen."},
+      {q:"2H₂ + O₂ → 2H₂O is:", options:["Endothermic","Exothermic","Neutralization","Oxidation"], answer:1, explanation:"Formation of water releases heat, so it is exothermic."},
+      {q:"Effect of temperature on reaction rate:", options:["Higher temperature slows it","Lower temperature speeds it","Higher temperature speeds it","Temperature has no effect"], answer:2, explanation:"Higher temperature increases particle energy, resulting in faster reactions."},
+      {q:"Photochemical reactions depend on:", options:["Catalyst","Light","Surface area","Pressure"], answer:1, explanation:"Light provides the energy to initiate photochemical reactions."},
+      {q:"Which factor is most important for gaseous reaction rate?", options:["Light","Pressure","Surface area","Temperature only"], answer:1, explanation:"Increasing pressure increases collisions between gas molecules, speeding up reactions."},
+      {q:"Bioluminescence in fireflies involves:", options:["H₂ + O₂ reaction","Enzyme luciferase acting on luciferin in presence of O₂","Photosynthesis","Neutralization"], answer:1, explanation:"Fireflies produce light through an enzyme-catalyzed reaction of luciferin with oxygen."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

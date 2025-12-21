@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7 Quiz – Force, Gravity & Motion</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy Level
+      {q:"Force is defined as:", options:["Only a push","Only a pull","A push or pull that can change the state of rest or motion","Energy stored in an object"], answer:2, explanation:"Force can either push or pull an object, causing it to move or stop."},
+      {q:"Gravitational force between two objects is:", options:["Independent of distance","Directly proportional to the product of their masses","Inversely proportional to the sum of their masses","Only acts on Earth"], answer:1, explanation:"Newton’s law: F ∝ m₁ × m₂."},
+      {q:"Universal gravitational constant (G) has the value:", options:["9.8 m/s²","6.674 × 10⁻¹¹ Nm²/kg²","1 N","3 × 10⁸ m/s"], answer:1, explanation:"G is the universal gravitational constant used in F = G(m₁ × m₂)/r²."},
+      {q:"Weight of an object is:", options:["Quantity of matter","Force due to gravity","Always constant","Measured in kg"], answer:1, explanation:"Weight is the gravitational force acting on an object’s mass."},
+      {q:"Mass of an object is measured in:", options:["Newton","Kilogram","Joule","Meter"], answer:1, explanation:"Mass is a scalar quantity measured in kilograms."},
+      {q:"Acceleration due to gravity on Earth is approximately:", options:["10 m/s²","9.8 m/s²","1 m/s²","9.8 N/kg"], answer:1, explanation:"g = 9.8 m/s² on Earth’s surface."},
+      {q:"Free fall means:", options:["Motion with air resistance","Motion only under gravity","Motion under applied force","Motion in orbit"], answer:1, explanation:"Free fall is motion under gravity alone, with no other forces."},
+      {q:"Gravitational force becomes one-fourth if:", options:["Mass of one object doubles","Distance is doubled","Both masses double","Force is halved manually"], answer:1, explanation:"F ∝ 1/r², so doubling distance reduces force by 1/4."},
+      {q:"The Moon’s gravity is roughly:", options:["Equal to Earth","1/6th of Earth","Double Earth’s","Zero"], answer:1, explanation:"Objects weigh ~6 times less on the Moon."},
+      {q:"Galileo demonstrated free fall from:", options:["Eiffel Tower","Leaning Tower of Pisa","Great Wall of China","Empire State Building"], answer:1, explanation:"Galileo’s experiment showed objects fall at the same rate regardless of mass."},
+      // Medium Level
+      {q:"Weight formula is:", options:["W = m × v","W = m × g","W = F × d","W = m/g"], answer:1, explanation:"Weight is mass times acceleration due to gravity."},
+      {q:"Difference between gravity and gravitation is:", options:["Gravity is universal, gravitation is Earth-specific","Gravity is Earth-specific, gravitation is universal","Gravity does not involve mass","Gravitation acts only on planets"], answer:1, explanation:"Gravity acts between Earth and objects; gravitation is universal between any two masses."},
+      {q:"If the mass of an object doubles, its weight:", options:["Halves","Remains same","Doubles","Quadruples"], answer:2, explanation:"Weight ∝ mass, so doubling mass doubles weight."},
+      {q:"If distance between two masses is halved, gravitational force becomes:", options:["Half","Double","Four times","Unchanged"], answer:2, explanation:"F ∝ 1/r²; halving r increases F by 4."},
+      {q:"For an object falling from rest, distance fallen is given by:", options:["s = ut","s = ½gt²","s = gt","s = u + gt"], answer:1, explanation:"u = 0 for free fall; s = ½gt²."},
+      {q:"In vacuum, acceleration due to gravity:", options:["Depends on mass","Is independent of mass","Becomes zero","Is halved"], answer:1, explanation:"All objects fall at same rate in vacuum."},
+      {q:"Final velocity under gravity (v) formula is:", options:["v = u × g","v = u + gt","v = u² + gt²","v = ½gt²"], answer:1, explanation:"Standard kinematic equation under constant acceleration."},
+      {q:"Distance covered by a free-falling object after 3s from rest (g = 9.8 m/s²):", options:["29.4 m","44.1 m","9.8 m","58.8 m"], answer:1, explanation:"s = ½ × g × t² = ½ × 9.8 × 9 = 44.1 m."},
+      {q:"Weight is a:", options:["Scalar quantity","Vector quantity","Both","None"], answer:1, explanation:"Weight has magnitude and direction (toward Earth’s center)."},
+      {q:"Mass is a:", options:["Scalar","Vector","Force","None"], answer:0, explanation:"Mass has only magnitude, no direction."},
+      {q:"g is lowest at:", options:["Poles","Equator","Sea level","Vacuum"], answer:1, explanation:"Earth’s rotation and equatorial bulge reduce g at the equator."},
+      {q:"Weight on the Moon is about:", options:["Equal to Earth","1/6th of Earth","Double of Earth","Zero"], answer:1, explanation:"Moon’s gravity is ~1/6th of Earth’s."},
+      // Hard Level
+      {q:"Gravitational force formula is:", options:["F = m × g","F = G × (m₁ × m₂)/r²","F = ½ m × v²","F = ma"], answer:1, explanation:"Newton’s law of gravitation formula."},
+      {q:"An object of mass 60 kg has weight on Earth:", options:["60 N","588 N","600 N","9.8 N"], answer:1, explanation:"W = mg = 60 × 9.8 = 588 N."},
+      {q:"Weight varies depending on:", options:["Mass only","Gravity only","Both mass and gravity","None"], answer:2, explanation:"W = m × g; both mass and g affect weight."},
+      {q:"A feather and coin fall with same acceleration in:", options:["Air","Vacuum","Water","Sand"], answer:1, explanation:"No air resistance → same free fall acceleration."},
+      {q:"If both masses in gravitational formula are doubled, force becomes:", options:["Same","Double","Quadruple","Half"], answer:2, explanation:"F ∝ m₁ × m₂; doubling both → 4×."},
+      {q:"If initial velocity u = 0, distance s in time t is:", options:["s = ut","s = ½gt²","s = u + gt","s = v²/2g"], answer:1, explanation:"Free fall from rest formula."},
+      {q:"Astronauts feel weightless in orbit because:", options:["Gravity is zero","Continuous free fall","Mass is zero","Acceleration = 0"], answer:1, explanation:"They are in perpetual free fall around Earth."},
+      {q:"Motion under gravity can be described using:", options:["Only s = ut","Only v = u + at","v = u + gt, s = ut + ½gt², v² = u² + 2gs","Only W = mg"], answer:2, explanation:"Equations of motion under uniform gravity."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

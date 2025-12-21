@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 6 Quiz – Nature, Environment & Conservation</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          background: #f4f4f9;
+        }
+        h1 {
+          text-align: center;
+        }
+        .question-box {
+          background: #fff;
+          padding: 20px;
+          margin-top: 20px;
+          border-radius: 10px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .options label {
+          display: block;
+          padding: 10px;
+          margin: 8px 0;
+          background: #f9f9f9;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+        .options input {
+          display: none;
+        }
+        .options label.correct {
+          background: #c8f7c5;
+          border-color: #27ae60;
+          color: #155724;
+        }
+        .options label.wrong {
+          background: #f8d7da;
+          border-color: #c0392b;
+          color: #721c24;
+        }
+        .explanation {
+          margin-top: 15px;
+          padding: 12px;
+          background: #eef5ff;
+          border-left: 4px solid #007bff;
+          border-radius: 4px;
+        }
+        .progress-container {
+          width: 100%;
+          background: #ddd;
+          border-radius: 10px;
+          overflow: hidden;
+          margin: 20px 0;
+        }
+        .progress-bar {
+          height: 20px;
+          width: 0%;
+          background: #007bff;
+          text-align: center;
+          color: #fff;
+          font-size: 12px;
+          line-height: 20px;
+        }
+        .score-board {
+          margin-top: 10px;
+          text-align: center;
+          font-weight: bold;
+        }
+        .summary {
+          text-align: center;
+          margin-top: 30px;
+          padding: 20px;
+          background: #fff;
+          border-radius: 10px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      {
+        q: "Nature includes:",
+        options: ["Only animals","Only forests and rivers","All physical and biological entities","Only human-made structures"],
+        answer: 2,
+        explanation: "Nature encompasses forests, rivers, mountains, animals, and other physical and biological components."
+      },
+      {
+        q: "The environment refers to:",
+        options: ["Only human-made structures","Surroundings in which living organisms exist","Only forests and rivers","Only climate patterns"],
+        answer: 1,
+        explanation: "Environment includes both natural components and human-made surroundings."
+      },
+      {
+        q: "Climate refers to:",
+        options: ["Short-term weather conditions","Long-term average of weather patterns","Sudden storms","Seasonal rainfall only"],
+        answer: 1,
+        explanation: "Climate is the long-term weather trend of a region."
+      },
+      {
+        q: "Which is a human-induced cause of climate change?",
+        options: ["Volcanic eruptions","Solar activity","Industrialization and burning fossil fuels","Albedo effect"],
+        answer: 2,
+        explanation: "Human activities like greenhouse gas emissions cause climate change."
+      },
+      {
+        q: "Melting glaciers are an effect of:",
+        options: ["Deforestation","Climate change","Protected areas","Soil erosion"],
+        answer: 1,
+        explanation: "Global warming and climate change lead to melting glaciers and sea level rise."
+      },
+      {
+        q: "Which of these is an endangered mammal in Nepal?",
+        options: ["Himalayan Monal","Red Panda","Cheer Pheasant","Giant Hornbill"],
+        answer: 1,
+        explanation: "Red Panda is listed as an endangered mammal in Nepal."
+      },
+      {
+        q: "Ex situ conservation means:",
+        options: ["Conserving species in natural habitat","Conserving species outside natural habitat","Community awareness programs","Legal protection only"],
+        answer: 1,
+        explanation: "Ex situ conservation includes botanical gardens, seed banks, or zoos."
+      },
+      {
+        q: "One-Horned Rhinoceros is protected in:",
+        options: ["Sagarmatha National Park","Chitwan National Park","Langtang National Park","None"],
+        answer: 1,
+        explanation: "Chitwan National Park is a key habitat for the one-horned rhino."
+      },
+      {
+        q: "Holy Basil (Tulsi) is used to:",
+        options: ["Treat skin infections","Boost immunity and support respiration","Improve digestion only","Increase stamina"],
+        answer: 1,
+        explanation: "Tulsi is a medicinal plant known for immunity and respiratory support."
+      },
+      {
+        q: "Climate is different from weather because:",
+        options: ["Weather is long-term, climate is short-term","Climate is short-term, weather is long-term","Weather is short-term, climate is long-term","Weather includes greenhouse gases"],
+        answer: 2,
+        explanation: "Weather = short-term conditions; Climate = long-term patterns."
+      },
+      {
+        q: "Albedo effect affects climate by:",
+        options: ["Changing Earth’s reflectivity","Emitting greenhouse gases","Planting trees","Increasing rainfall"],
+        answer: 0,
+        explanation: "Albedo effect is caused by changes in reflectivity of Earth’s surface or cloud cover."
+      },
+      {
+        q: "Deforestation contributes to climate change because:",
+        options: ["It reduces CO₂ levels","It increases greenhouse gas emissions","It lowers human population","It enhances rainfall only"],
+        answer: 1,
+        explanation: "Trees absorb CO₂; deforestation increases CO₂, enhancing global warming."
+      },
+      {
+        q: "Which of the following is a natural cause of climate change?",
+        options: ["Industrialization","Volcanic eruptions","Deforestation","Fossil fuel burning"],
+        answer: 1,
+        explanation: "Volcanic eruptions can block sunlight, temporarily cooling Earth."
+      },
+      {
+        q: "Spiny Babbler is an endangered:",
+        options: ["Mammal","Bird","Reptile","Fish"],
+        answer: 1,
+        explanation: "Spiny Babbler is an endangered bird species in Nepal."
+      },
+      {
+        q: "Community-based conservation includes:",
+        options: ["Illegal hunting","Involving local stewards","Ignoring species monitoring","Removing local people from habitat"],
+        answer: 1,
+        explanation: "Locals are involved in protecting endangered species and habitats."
+      },
+      {
+        q: "Which is an example of ex situ plant conservation in Nepal?",
+        options: ["National parks","Seed banks","Forest reserves","Protected wetlands"],
+        answer: 1,
+        explanation: "Seed banks store plant species outside their natural habitat."
+      },
+      {
+        q: "Giant Hornbill is a protected:",
+        options: ["Mammal","Bird","Reptile","Amphibian"],
+        answer: 1,
+        explanation: "Giant Hornbill is among Nepal’s protected bird species."
+      },
+      {
+        q: "Climate change disrupts agriculture primarily by:",
+        options: ["Protecting crops","Altering rainfall patterns","Reducing soil erosion","Conserving biodiversity"],
+        answer: 1,
+        explanation: "Unpredictable rainfall and temperature extremes affect crop productivity."
+      },
+      {
+        q: "Which of the following is a control measure for climate change?",
+        options: ["Using energy-efficient technologies","Increasing fossil fuel use","Deforestation","Ignoring public awareness"],
+        answer: 0,
+        explanation: "Reducing emissions and energy-efficient methods help mitigate climate change."
+      },
+      {
+        q: "Vulture populations improved in Nepal due to:",
+        options: ["Reforestation","Community-led safe feeding zones","Poaching","Industrialization"],
+        answer: 1,
+        explanation: "Safe feeding zones and banning diclofenac saved vultures."
+      },
+      {
+        q: "Which of these is a medicinal plant used for wound healing?",
+        options: ["Tulsi","Turmeric","Aloe Vera","Neem"],
+        answer: 1,
+        explanation: "Turmeric has anti-inflammatory and wound-healing properties."
+      },
+      {
+        q: "Protected habitats for animals include all except:",
+        options: ["Chitwan National Park","Bardia National Park","Everest Base Camp","Sagarmatha National Park"],
+        answer: 2,
+        explanation: "Everest Base Camp is not a protected wildlife habitat."
+      },
+      {
+        q: "Human-induced greenhouse gases include all except:",
+        options: ["CO₂","CH₄","N₂","CFCs"],
+        answer: 2,
+        explanation: "Nitrogen (N₂) is naturally abundant and does not contribute to greenhouse effect."
+      },
+      {
+        q: "One-Horned Rhinoceros is endangered mainly due to:",
+        options: ["Climate change only","Poaching and habitat loss","Lack of prey","Global warming only"],
+        answer: 1,
+        explanation: "Habitat destruction and poaching are major causes of endangerment."
+      },
+      {
+        q: "In situ conservation means:",
+        options: ["Protecting species outside natural habitat","Conserving species in their natural habitat","Seed banking","Laboratory research only"],
+        answer: 1,
+        explanation: "In situ = species remain in natural ecosystem."
+      },
+      {
+        q: "Which human activity directly increases atmospheric CO₂ levels?",
+        options: ["Solar flares","Deforestation","Volcanic eruptions","Albedo effect"],
+        answer: 1,
+        explanation: "Cutting trees reduces CO₂ absorption, raising atmospheric CO₂."
+      },
+      {
+        q: "Yarsa Gumba (Caterpillar Fungus) is used for:",
+        options: ["Respiratory ailments","Energy and stamina enhancement","Digestive health only","Skin regeneration"],
+        answer: 1,
+        explanation: "Yarsa Gumba is valued as a stamina-boosting medicinal fungus."
+      },
+      {
+        q: "Which of the following is NOT a major effect of climate change?",
+        options: ["Rising global temperatures","Loss of biodiversity","Reduced solar energy output","Increased extreme weather events"],
+        answer: 2,
+        explanation: "Solar energy variations are a natural cause, not a direct effect."
+      },
+      {
+        q: "The main purpose of protected areas in Nepal is to:",
+        options: ["Promote tourism only","Conserve endangered species","Build urban settlements","Increase deforestation"],
+        answer: 1,
+        explanation: "Protected areas safeguard habitats and maintain ecological balance."
+      },
+      {
+        q: "Afforestation helps climate change mitigation because it:",
+        options: ["Reduces oxygen","Absorbs CO₂","Increases global temperature","Pollutes rivers"],
+        answer: 1,
+        explanation: "Trees absorb CO₂, reducing greenhouse gas concentrations."
+      }
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current = 0, correct = 0, incorrect = 0;
+
+    const quizContainer = document.getElementById("quiz-container");
+    const currentQ = document.getElementById("current-question");
+    const totalQ = document.getElementById("total-questions");
+    const correctCount = document.getElementById("correct-count");
+    const incorrectCount = document.getElementById("incorrect-count");
+    const scorePercent = document.getElementById("score-percent");
+    const progressBar = document.getElementById("progress-bar");
+    const summary = document.getElementById("summary");
+
+    totalQ.textContent = questions.length;
+
+    function showQuestion() {
+      if (current >= questions.length) {
+        showSummary();
+        return;
+      }
+      const q = questions[current];
+      quizContainer.innerHTML = `
+        <h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt, i) => `
+            <label><input type="radio" name="option" value="${i}"> ${opt}</label>
+          `).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>
+      `;
+      currentQ.textContent = current + 1;
+      progressBar.style.width = ((current) / questions.length * 100) + "%";
+      progressBar.textContent = Math.round((current) / questions.length * 100) + "%";
+
+      const options = quizContainer.querySelectorAll("input[name=option]");
+      const labels = quizContainer.querySelectorAll("label");
+      const explanation = quizContainer.querySelector(".explanation");
+
+      options.forEach((opt, i) => {
+        opt.addEventListener("change", () => {
+          labels.forEach(l => l.style.pointerEvents = "none");
+          if (q.options[i] === q.options[q.answer]) {
+            labels[i].classList.add("correct");
+            correct++;
+          } else {
+            labels[i].classList.add("wrong");
+            const correctIndex = [...q.options].indexOf(q.options[q.answer]);
+            labels[correctIndex].classList.add("correct");
+            incorrect++;
+          }
+          explanation.style.display = "block";
+          explanation.textContent = q.explanation;
+          updateScore();
+          setTimeout(() => {
+            current++;
+            showQuestion();
+          }, 3500);
+        });
+      });
+    }
+
+    function updateScore() {
+      correctCount.textContent = correct;
+      incorrectCount.textContent = incorrect;
+      let percent = Math.round((correct / (correct + incorrect)) * 100) || 0;
+      scorePercent.textContent = percent + "%";
+    }
+
+    function showSummary() {
+      quizContainer.style.display = "none";
+      progressBar.style.width = "100%";
+      progressBar.textContent = "100%";
+      summary.style.display = "block";
+      let percent = Math.round((correct / questions.length) * 100);
+      summary.innerHTML = `
+        <h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>
+      `;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>

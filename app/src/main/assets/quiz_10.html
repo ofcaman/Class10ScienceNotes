@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 9 Quiz – Light & Optics</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f9; }
+        h1 { text-align: center; }
+        .question-box { background: #fff; padding: 20px; margin-top: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .options label { display: block; padding: 10px; margin: 8px 0; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: background 0.3s; }
+        .options input { display: none; }
+        .options label.correct { background: #c8f7c5; border-color: #27ae60; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #c0392b; color: #721c24; }
+        .explanation { margin-top: 15px; padding: 12px; background: #eef5ff; border-left: 4px solid #007bff; border-radius: 4px; }
+        .progress-container { width: 100%; background: #ddd; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { height: 20px; width: 0%; background: #007bff; text-align: center; color: #fff; font-size: 12px; line-height: 20px; }
+        .score-board { margin-top: 10px; text-align: center; font-weight: bold; }
+        .summary { text-align: center; margin-top: 30px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+</div>
+<div class="score-board">
+    Question <span id="current-question">1</span> of <span id="total-questions">30</span> |
+    Correct: <span id="correct-count">0</span> |
+    Incorrect: <span id="incorrect-count">0</span> |
+    Score: <span id="score-percent">0%</span>
+</div>
+<div id="quiz-container" class="question-box"></div>
+<div id="summary" class="summary" style="display:none;"></div>
+
+<script>
+    const questions = [
+      // Easy (8)
+      {q:"Which of the following can travel through a vacuum?", options:["Sound waves","Light waves","Water waves","Seismic waves"], answer:1, explanation:"Light is an electromagnetic wave and does not require a medium."},
+      {q:"Light slows down in which type of medium?", options:["Rarer medium","Denser medium","Vacuum","Air"], answer:1, explanation:"Denser media like water and glass reduce light’s speed."},
+      {q:"Angle of incidence is measured between:", options:["Refracted ray and normal","Incident ray and normal","Emergent ray and principal axis","Light ray and lens"], answer:1, explanation:"By definition, angle of incidence is between incident ray and normal."},
+      {q:"A convex lens is:", options:["Thicker at edges","Thicker in middle","Flat","Diverging always"], answer:1, explanation:"Convex lens is converging and thicker at the center."},
+      {q:"Critical angle is relevant when light travels from:", options:["Rarer to denser medium","Denser to rarer medium","Any medium to vacuum","Air to water only"], answer:1, explanation:"Total internal reflection occurs only from denser to rarer medium."},
+      {q:"In a normal eye, the near point is approximately:", options:["5 cm","10 cm","25 cm","Infinity"], answer:2, explanation:"Typical near point for normal eye is 25 cm."},
+      {q:"Light splits into colors due to:", options:["Reflection","Dispersion","Refraction only","Total internal reflection"], answer:1, explanation:"Dispersion occurs when different colors bend differently in a prism."},
+      {q:"Myopia is corrected using:", options:["Convex lens","Concave lens","Plane glass","Prism"], answer:1, explanation:"Concave lens diverges light so that it focuses on the retina."},
+      // Medium (12)
+      {q:"A light ray enters a glass slab. What happens?", options:["Bends away from normal, then emerges parallel","Bends toward normal, then emerges parallel","Passes straight without bending","Reflects completely"], answer:1, explanation:"In denser medium, light bends toward normal and emerges parallel after exiting."},
+      {q:"Refractive index (n) is defined as:", options:["sin r / sin i","Speed in medium / Speed in air","sin i / sin r","f / P"], answer:2, explanation:"Refractive index = sin i / sin r or speed ratio vair / vmedium."},
+      {q:"Twinkling of stars is caused by:", options:["Reflection","Atmospheric refraction","Total internal reflection","Dispersion"], answer:1, explanation:"Random bending in air layers causes apparent twinkle."},
+      {q:"A concave lens always produces:", options:["Real, inverted, enlarged image","Virtual, upright, reduced image","Virtual, upright, enlarged image","Real, inverted, diminished image"], answer:1, explanation:"Concave lens diverges light, giving virtual, upright, reduced images."},
+      {q:"Which lens power is negative?", options:["Convex lens","Concave lens","Both","None"], answer:1, explanation:"Concave lens has negative focal length, thus negative power."},
+      {q:"Optical fibers use:", options:["Refraction only","Total internal reflection","Dispersion","Convex lenses"], answer:1, explanation:"TIR keeps light trapped in fiber core for transmission."},
+      {q:"Image by convex lens when object is at 2F:", options:["At F, diminished","At 2F, same size, inverted","Beyond 2F, enlarged","No image"], answer:1, explanation:"Standard lens formula; at 2F, image is real, inverted, same size."},
+      {q:"Near-sightedness is caused by:", options:["Short eyeball","Elongated eyeball","Weak lens","Flat cornea"], answer:1, explanation:"Elongated eyeball focuses light before retina."},
+      {q:"Far-sightedness is corrected using:", options:["Concave lens","Convex lens","Plane mirror","Prism"], answer:1, explanation:"Convex lens converges light to focus on retina."},
+      {q:"Rainbow formation is an example of:", options:["Total internal reflection only","Refraction, reflection, and dispersion","Refraction only","Reflection only"], answer:1, explanation:"Sunlight disperses, reflects in raindrops forming rainbow."},
+      {q:"Principal focus of a convex lens is:", options:["Point where parallel rays diverge","Point where parallel rays converge","Point at optical center","Point behind lens"], answer:1, explanation:"Convex lens converges parallel rays to principal focus."},
+      {q:"LASIK surgery reshapes:", options:["Retina","Cornea","Lens","Optic nerve"], answer:1, explanation:"LASIK reshapes cornea to correct vision permanently."},
+      // Hard (10)
+      {q:"A light ray passes from water (n=1.33) to air (n=1.0). Critical angle?", options:["48.8°","41.8°","50°","60°"], answer:0, explanation:"sin θc = n₂ / n₁ = 1 / 1.33 → θc ≈ 48.8°."},
+      {q:"A convex lens of f = 0.5 m. Power?", options:["0.5 D","2 D","-2 D","-0.5 D"], answer:1, explanation:"P = 1/f = 1/0.5 = 2 D (positive for convex)."},
+      {q:"Image by convex lens when object is between F and O:", options:["Real, inverted","Virtual, upright, enlarged","Real, same size","No image"], answer:1, explanation:"Object inside focus gives virtual, upright, magnified image."},
+      {q:"Light in optical fiber travels long distance because:", options:["Refraction in core","TIR at core-cladding interface","Dispersion","Lens system inside fiber"], answer:1, explanation:"TIR traps light inside core for minimal loss."},
+      {q:"The “stick-in-water” effect is due to:", options:["Reflection","Refraction","TIR","Dispersion"], answer:1, explanation:"Light bends at water surface, making stick appear bent."},
+      {q:"Which of the following is true about dispersion in prism?", options:["Red bends more than violet","Violet bends more than red","All colors bend equally","Only blue bends"], answer:1, explanation:"Shorter wavelengths (violet) bend more."},
+      {q:"Accommodation for near vision involves:", options:["Flattening lens","Thickening lens","Relaxing ciliary muscles","Narrowing pupil"], answer:1, explanation:"Lens thickens to focus near objects on retina."},
+      {q:"Corneal transplant corrects:", options:["Cataract","Keratoconus or corneal damage","Myopia","Colour blindness"], answer:1, explanation:"Cornea replacement restores vision in damaged corneas."},
+      {q:"Mirage is caused by:", options:["TIR in warm air layers","Refraction at lens","Dispersion","Reflection only"], answer:0, explanation:"Heated air causes TIR producing false water image."},
+      {q:"Refractive index n of glass (n=1.5) means:", options:["Light slows down 1.5 times","Light speeds up 1.5 times","sin i / sin r = 1.5","Both A and C"], answer:3, explanation:"n = sin i / sin r = vair / vglass → light slows, ratio 1.5."}
+    ];
+
+    function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}
+questions.forEach(q => shuffleOptions(q));
+    shuffle(questions);
+
+    function shuffleOptions(question) {
+  let correctAnswerText = question.options[question.answer]; // store correct text
+  shuffle(question.options); // shuffle options
+  question.answer = question.options.indexOf(correctAnswerText); // update index
+}
+
+
+    let current=0,correct=0,incorrect=0;
+    const quizContainer=document.getElementById("quiz-container");
+    const currentQ=document.getElementById("current-question");
+    const totalQ=document.getElementById("total-questions");
+    const correctCount=document.getElementById("correct-count");
+    const incorrectCount=document.getElementById("incorrect-count");
+    const scorePercent=document.getElementById("score-percent");
+    const progressBar=document.getElementById("progress-bar");
+    const summary=document.getElementById("summary");
+
+    totalQ.textContent=questions.length;
+
+    function showQuestion(){
+      if(current>=questions.length){showSummary(); return;}
+      const q=questions[current];
+      quizContainer.innerHTML=`<h2>${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt,i)=>`<label><input type="radio" name="option" value="${i}"> ${opt}</label>`).join("")}
+        </div>
+        <div class="explanation" style="display:none;"></div>`;
+      currentQ.textContent=current+1;
+      progressBar.style.width=((current)/questions.length*100)+"%";
+      progressBar.textContent=Math.round((current)/questions.length*100)+"%";
+
+      const options=quizContainer.querySelectorAll("input[name=option]");
+      const labels=quizContainer.querySelectorAll("label");
+      const explanation=quizContainer.querySelector(".explanation");
+
+      options.forEach((opt,i)=>{
+        opt.addEventListener("change",()=>{
+          labels.forEach(l=>l.style.pointerEvents="none");
+          if(i===q.answer){labels[i].classList.add("correct"); correct++;}
+          else{labels[i].classList.add("wrong"); labels[q.answer].classList.add("correct"); incorrect++;}
+          explanation.style.display="block"; explanation.textContent=q.explanation;
+          updateScore();
+          setTimeout(()=>{current++; showQuestion();},3500);
+        });
+      });
+    }
+
+    function updateScore(){
+      correctCount.textContent=correct;
+      incorrectCount.textContent=incorrect;
+      let percent=Math.round((correct/(correct+incorrect))*100)||0;
+      scorePercent.textContent=percent+"%";
+    }
+
+    function showSummary(){
+      quizContainer.style.display="none";
+      progressBar.style.width="100%";
+      progressBar.textContent="100%";
+      summary.style.display="block";
+      let percent=Math.round((correct/questions.length)*100);
+      summary.innerHTML=`<h2>Quiz Complete</h2>
+        <p>Total Correct: ${correct}</p>
+        <p>Total Incorrect: ${incorrect}</p>
+        <p>Final Score: ${percent}%</p>`;
+    }
+
+    showQuestion();
+</script>
+</body>
+</html>
